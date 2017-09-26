@@ -5,7 +5,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 枚举工具类,提供缓存枚举数据,在创建枚举对象时写入,根据相应KEY进行读出,加速枚举访问
- * @since
+ * @author <a href=mailto:wangsongpeng@jd.com>王宋鹏</a>
+ * @since 1.0.0.Alpha
  */
 public class EnumUtils {
     //并发控制HashMap

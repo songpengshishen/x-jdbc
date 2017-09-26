@@ -1,88 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsd:schema xmlns="http://pop.jd.com/schema/popcache"
+<xsd:schema xmlns="http://xjdbc.jd.com/schema/xjdbc"
             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
             xmlns:beans="http://www.springframework.org/schema/beans"
-            targetNamespace="http://pop.jd.com/schema/popcache"
+            targetNamespace="http://xjdbc.jd.com/schema/xjdbc"
             elementFormDefault="qualified" attributeFormDefault="unqualified">
     <xsd:import namespace="http://www.springframework.org/schema/beans"/>
-    <xsd:element name="redis">
+    <xsd:element name="rwds">
         <xsd:annotation>
-            <xsd:documentation><![CDATA[ 直接使用jimdb1.4.5 api，兼容老平台 ]]></xsd:documentation>
+            <xsd:documentation><![CDATA[ 读写分离数据源标签 集群数据源ID,路由算法默认随机 ]]></xsd:documentation>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:complexContent>
-                <!-- 继承定义 从namespace="http://www.springframework.org/schema/beans" -->
                 <xsd:extension base="beans:identifiedType">
-                    <xsd:attribute name="configId" type="xsd:string" use="required"/>
-                    <xsd:attribute name="configClient" type="xsd:string"
-                                   use="optional" default="configClient"/>
-                    <xsd:attribute name="token" type="xsd:string" use="required"/>
+                    <xsd:attribute name="cluterId" type="xsd:string" use="required"/>
+                    <xsd:attribute name="route" type="xsd:string" use="optional" default="random">
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:string">
+                                <xsd:enumeration value="random" />
+                                <xsd:enumeration value="localroom" />
+                            </xsd:restriction>
+                        </xsd:simpleType>
+                    </xsd:attribute>
                 </xsd:extension>
             </xsd:complexContent>
         </xsd:complexType>
     </xsd:element>
-    <xsd:element name="jimdb">
+
+    <xsd:element name="cluter">
         <xsd:annotation>
             <xsd:documentation>
-                <![CDATA[ redis 1.4.5版本连接客户端，适用于jimdb方式；以及在廊坊机房并在adm.cache.jd.com上的管理平台的集群
-                configId及jimUrl为可选方式
-                ]]></xsd:documentation>
+                <![CDATA[ 数据源集群配置  targetDataSources : 目标数据源集合 defaultTargetDataSource : 默认数据源 ]]>
+            </xsd:documentation>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:complexContent>
-                <!-- 继承定义 从namespace="http://www.springframework.org/schema/beans" -->
                 <xsd:extension base="beans:identifiedType">
-                    <xsd:attribute name="configId" type="xsd:string" use="required"/>
-                    <xsd:attribute name="serviceEndpoint" type="xsd:string"
-                                   use="optional"/>
-                    <xsd:attribute name="token" type="xsd:string" use="optional"/>
-                    <xsd:attribute name="jimUrl" type="xsd:string"
-                                   use="optional"/>
+                    <xsd:attribute name="defaultTargetDataSource" type="xsd:string" use="optional"/>
+                    <xsd:attribute name="targetDataSources" type="xsd:string" use="required"/>
                 </xsd:extension>
             </xsd:complexContent>
         </xsd:complexType>
     </xsd:element>
-    <xsd:element name="lock">
+
+
+    <xsd:element name="wrapper">
         <xsd:annotation>
-            <xsd:documentation>Concurrent lock by redis</xsd:documentation>
+            <xsd:documentation>
+                <![CDATA[ 数据源包装类 ]]>
+            </xsd:documentation>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:complexContent>
                 <xsd:extension base="beans:identifiedType">
-                    <xsd:attribute name="cacheProxy" type="xsd:string" use="required">
-                        <xsd:annotation>
-                            <xsd:documentation><![CDATA[ 锁需要的缓存代理bean,不可为空 ]]></xsd:documentation>
-                        </xsd:annotation>
+                    <xsd:attribute name="deployRoom" type="xsd:string" use="required">
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:string">
+                                <xsd:enumeration value="LF" />
+                                <xsd:enumeration value="MJQ" />
+                            </xsd:restriction>
+                        </xsd:simpleType>
                     </xsd:attribute>
-                    <xsd:attribute name="expireSeconds" type="xsd:string"
-                                   use="optional" default="30">
-                        <xsd:annotation>
-                            <xsd:documentation><![CDATA[ 缓存锁失效时间;默认为30秒 ]]></xsd:documentation>
-                        </xsd:annotation>
+                    <xsd:attribute name="role" type="xsd:string"  use="required">
+                        <xsd:simpleType>
+                            <xsd:restriction base="xsd:string">
+                                <xsd:enumeration value="MASTER" />
+                                <xsd:enumeration value="SLAVE" />
+                            </xsd:restriction>
+                        </xsd:simpleType>
                     </xsd:attribute>
-                    <xsd:attribute name="checkExpireNum" type="xsd:string"
-                                   use="optional" default="10">
-                        <xsd:annotation>
-                            <xsd:documentation><![CDATA[ 校验并设置锁失效时间次数，防止锁在异常异常情况不释放;
-                            默认为10次；表示锁在有效期内，被重复获取锁的次数; ]]></xsd:documentation>
-                        </xsd:annotation>
-                    </xsd:attribute>
-
-                    <xsd:attribute name="rejectedHandler" type="xsd:string"
-                                   use="optional" default="abort">
-                        <xsd:annotation>
-                            <xsd:documentation><![CDATA[ 获取锁失败处理机制;abort:抛出异常,默认方式;discard:忽略并返回空; ]]></xsd:documentation>
-                        </xsd:annotation>
-                    </xsd:attribute>
-                    <xsd:attribute name="lockType" type="xsd:string" use="optional" default="jimdb">
-                        <xsd:annotation>
-                            <xsd:documentation><![CDATA[ 设置锁类型;jimdb:使用jimdb封装的原子方法,获取锁并设置超时时间,默认方式;
-                            reids:使用reids的incr、ttl及expire方法实现; ]]></xsd:documentation>
-                        </xsd:annotation>
-                    </xsd:attribute>
-
+                    <xsd:attribute name="weight" type="xsd:string" use="optional" default="0"/>
                 </xsd:extension>
             </xsd:complexContent>
         </xsd:complexType>
     </xsd:element>
+
 </xsd:schema>

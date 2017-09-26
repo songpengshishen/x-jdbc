@@ -6,8 +6,8 @@ import java.lang.annotation.*;
 
 /**
  * 读写分离数据源切换
- * @author wsp
- * @since 2017/09/25
+ * @author <a href=mailto:wangsongpeng@jd.com>王宋鹏</a>
+ * @since 1.0.0.Alpha
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)

@@ -4,8 +4,8 @@ import com.jd.jdbc.utils.EnumUtils;
 
 /**
  * 数据源所属机房枚举
- * @author wsp
- * @since 2017/09/25
+ * @author <a href=mailto:wangsongpeng@jd.com>王宋鹏</a>
+ * @since 1.0.0.Alpha
  */
 public enum DataSourceRoomEnum {
 
@@ -22,17 +22,24 @@ public enum DataSourceRoomEnum {
     }
 
 
-    /**
-     * 根据附件类型获取附件枚举
-     * @return 文件后缀
-     */
     public static DataSourceRoomEnum valueOfByCode(String key) {
         return EnumUtils.getByCache(DataSourceRoomEnum.class,key);
     }
-    @Override
-    public String toString() {
-        return "DataSourceRoomEnum{" +
-                "key='" + key + '\'' +
-                '}';
+
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
     }
 }
