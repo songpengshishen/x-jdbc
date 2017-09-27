@@ -59,32 +59,34 @@ public class DataSourceCluterConfig implements InitializingBean{
     public void afterPropertiesSet() throws Exception {
         if(!initialization){
             synchronized (lock){
-                if(CollectionUtils.isEmpty(targetDataSources)){
-                    throw new IllegalArgumentException("property targetDataSources is not null!");
-                }
-                this.slaveList = new CopyOnWriteArrayList<DataSourceWrapper>();//初始化从库list
-                //迭代所有目标数据源,set到各属性中
-                for(DataSourceWrapper dataSource:targetDataSources){
-                    if(DataSourceRoleEnum.valueOf(dataSource.getRole()) == DataSourceRoleEnum.MASTER){
-                        //只可以有一个主库数据源
-                        if(null != this.master){
-                            throw new XJdbcConfigurationException("master definition Repeat!",dataSource.getId());
-                        }
-                        if(null == this.master){
-                            this.master = dataSource; //设置master
-                        }
-                    }else if(DataSourceRoleEnum.valueOf(dataSource.getRole()) == DataSourceRoleEnum.SLAVE){
-                        slaveList.add(dataSource);//添加从库
-                    }else{
-                        throw new XJdbcConfigurationException("dataSource definition Error!No such Role : " + dataSource.getRole(),dataSource.getId());
+                if(!initialization){
+                    if(CollectionUtils.isEmpty(targetDataSources)){
+                        throw new IllegalArgumentException("property targetDataSources is not null!");
                     }
+                    this.slaveList = new CopyOnWriteArrayList<DataSourceWrapper>();//初始化从库list
+                    //迭代所有目标数据源,set到各属性中
+                    for(DataSourceWrapper dataSource:targetDataSources){
+                        if(DataSourceRoleEnum.valueOf(dataSource.getRole()) == DataSourceRoleEnum.MASTER){
+                            //只可以有一个主库数据源
+                            if(null != this.master){
+                                throw new XJdbcConfigurationException("master definition Repeat!",dataSource.getId());
+                            }
+                            if(null == this.master){
+                                this.master = dataSource; //设置master
+                            }
+                        }else if(DataSourceRoleEnum.valueOf(dataSource.getRole()) == DataSourceRoleEnum.SLAVE){
+                            slaveList.add(dataSource);//添加从库
+                        }else{
+                            throw new XJdbcConfigurationException("dataSource definition Error!No such Role : " + dataSource.getRole(),dataSource.getId());
+                        }
+                    }
+                    if(defaultTargetDataSource == null){
+                        //没有设置默认数据源时,将主库数据源设置为默认数据源
+                        defaultTargetDataSource = this.master;
+                    }
+                    initialization = true; //初始化成功
+                    log.error("DataSourceCluterConfig Init Success!");
                 }
-                if(defaultTargetDataSource == null){
-                    //没有设置默认数据源时,将主库数据源设置为默认数据源
-                    defaultTargetDataSource = this.master;
-                }
-                initialization = true; //初始化成功
-                log.error("DataSourceCluterConfig Init Success!");
             }
         }
     }
