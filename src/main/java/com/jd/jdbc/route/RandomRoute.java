@@ -23,7 +23,7 @@ public class RandomRoute extends AbstractRoute implements Route{
      * @return 数据源
      */
     @Override
-    public DataSource doRoute(List<DataSourceWrapper> dataSourceWrappers) {
+    public String doRoute(List<DataSourceWrapper> dataSourceWrappers) {
         DataSourceWrapper dataSourceWrapper = null;//数据源包装类
         final List<DataSourceWrapper> ds = dataSourceWrappers;
         int length = ds.size(); // 总个数
@@ -52,7 +52,7 @@ public class RandomRoute extends AbstractRoute implements Route{
             // 如果权重相同或权重为0则均等随机
             dataSourceWrapper = ds.get(random.nextInt(length));
         }
-        return getDataSourceByBeanId(dataSourceWrapper.getId());
+        return dataSourceWrapper.getId();
     }
 
 

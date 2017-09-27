@@ -36,12 +36,12 @@ public abstract class AbstractRoute implements Route {
      * @param dataSourceWrappers 可用的数据源集合
      * @return 数据源
      */
-    public DataSource route(List<DataSourceWrapper> dataSourceWrappers) {
+    public String route(List<DataSourceWrapper> dataSourceWrappers) {
         if (dataSourceWrappers.size() == 0) {
             throw new XJdbcNoAliveDataSourceException();
         }
         if (dataSourceWrappers.size() == 1) {
-            return getDataSourceByBeanId(dataSourceWrappers.get(0).getId());
+            return dataSourceWrappers.get(0).getId();
         } else {
             return doRoute(dataSourceWrappers);
         }
@@ -50,9 +50,9 @@ public abstract class AbstractRoute implements Route {
     /**
      * 根据路由算法获取真正的数据源
      * @param dataSourceWrappers 可用的数据源集合
-     * @return 数据源
+     * @return 数据源beanId
      */
-    public abstract DataSource doRoute(List<DataSourceWrapper> dataSourceWrappers);
+    public abstract String doRoute(List<DataSourceWrapper> dataSourceWrappers);
 
 
     /**
@@ -64,14 +64,7 @@ public abstract class AbstractRoute implements Route {
         return dataSourceWrapper.getWeight() < 0 ? 0 : dataSourceWrapper.getWeight();
     }
 
-    /**
-     * 根据BeanId获取真正的数据源
-     * @param beanId
-     * @return
-     */
-    protected DataSource getDataSourceByBeanId(String beanId){
-        return  SpringUtils.getBean(beanId,DataSource.class);
-    }
+
 
 
 }

@@ -14,7 +14,7 @@ public interface Route {
     /**
      * 路由算法
      * @param dataSourceWrappers 可用的数据源集合
-     * @return 数据源
+     * @return 数据源BeanId
      */
-    public DataSource route(List<DataSourceWrapper> dataSourceWrappers);
+    public String route(List<DataSourceWrapper> dataSourceWrappers);
 }

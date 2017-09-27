@@ -1,9 +1,11 @@
 package com.jd.jdbc.ds;
 
-import com.jd.jdbc.route.AbstractRoute;
 import com.jd.jdbc.route.Route;
+import com.jd.jdbc.utils.SpringUtils;
 
+import javax.annotation.Resource;
 import javax.sql.DataSource;
+import javax.xml.crypto.Data;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -25,9 +27,12 @@ public class ReadWriteMultipleDataSource extends ProxyDataSource {
     private Route route;
 
     /**
-     * 存放数据源的线程本地私有对象,存放了当前线程的数据源
+     * 存放数据源的线程本地私有对象,存放了当前线程的数据源beanId
      */
-    private ThreadLocal<DataSource> currentDataSource = new ThreadLocal<DataSource>();
+    private ThreadLocal<String> currentDataSource = new ThreadLocal<String>();
+
+    @Resource
+    private SpringUtils springUtils;
 
 
 
@@ -69,23 +74,35 @@ public class ReadWriteMultipleDataSource extends ProxyDataSource {
      * 获取ThreadLocal中的数据源
      * @return
      */
-    public DataSource getDataSource(){
+    private DataSource getDataSource(){
+        String beanId =  getDataSourceBeanId();
+        return SpringUtils.getBean(beanId, DataSource.class);
+    }
+
+
+
+    /**
+     * 获取ThreadLocal中的数据源beanId
+     * @return
+     */
+    public String getDataSourceBeanId(){
         return currentDataSource.get();
     }
 
+
     /**
-     * 设置ThreadLocal中的数据源
+     * 设置ThreadLocal中的数据源beanId
      * @return
      */
-    public void setDataSource(DataSource dataSource){
-         currentDataSource.set(dataSource);
+    public void setDataSourceBeanId(String dataSourceBeanId){
+         currentDataSource.set(dataSourceBeanId);
     }
 
     /**
      * 清空ThreadLocal中的数据源
      * @return
      */
-    public void clearDataSource(DataSource dataSource){
+    public void clearDataSource(){
         currentDataSource.remove();
     }
 

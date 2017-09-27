@@ -16,7 +16,7 @@ public class SimpleRoute extends AbstractRoute implements  Route{
      * @return 数据源
      */
     @Override
-    public DataSource doRoute(List<DataSourceWrapper> dataSourceWrappers) {
-       return getDataSourceByBeanId(dataSourceWrappers.get(0).getId());
+    public String doRoute(List<DataSourceWrapper> dataSourceWrappers) {
+       return dataSourceWrappers.get(0).getId();
     }
 }

@@ -18,7 +18,7 @@ public class LocalRoomRoute extends AbstractRoute {
      * @return 数据源
      */
     @Override
-    public DataSource doRoute(List<DataSourceWrapper> dataSourceWrappers) {
+    public String doRoute(List<DataSourceWrapper> dataSourceWrappers) {
         // TODO: 2017/9/27 暂未实现 
         return null;
     }
