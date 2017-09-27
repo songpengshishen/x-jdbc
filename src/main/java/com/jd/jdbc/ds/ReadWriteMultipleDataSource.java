@@ -1,5 +1,6 @@
 package com.jd.jdbc.ds;
 
+import com.jd.jdbc.route.AbstractRoute;
 import com.jd.jdbc.route.Route;
 
 import javax.sql.DataSource;
@@ -88,13 +89,6 @@ public class ReadWriteMultipleDataSource extends ProxyDataSource {
         currentDataSource.remove();
     }
 
-    public DataSourceCluterConfig getDataSourceCluterConfig() {
-        return dataSourceCluterConfig;
-    }
-
-    public void setDataSourceCluterConfig(DataSourceCluterConfig dataSourceCluterConfig) {
-        this.dataSourceCluterConfig = dataSourceCluterConfig;
-    }
 
     public Route getRoute() {
         return route;
@@ -103,4 +97,15 @@ public class ReadWriteMultipleDataSource extends ProxyDataSource {
     public void setRoute(Route route) {
         this.route = route;
     }
+
+    public DataSourceCluterConfig getDataSourceCluterConfig() {
+        return dataSourceCluterConfig;
+    }
+
+    public void setDataSourceCluterConfig(DataSourceCluterConfig dataSourceCluterConfig) {
+        this.dataSourceCluterConfig = dataSourceCluterConfig;
+    }
+
+
+
 }

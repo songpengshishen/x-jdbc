@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * 数据源权重随机路由算法基类,无耻的我借用了JSF的权重随机路由算法.
+ * 数据源权重随机路由算法基类.
  * @author <a href=mailto:wangsongpeng@jd.com>王宋鹏</a>
  * @since 1.0.0.Alpha
  */
-public class RandomRoute extends Route{
+public class RandomRoute extends AbstractRoute implements Route{
 
     /**
      * 随机数
@@ -18,6 +18,7 @@ public class RandomRoute extends Route{
 
     /**
      * 根据路由算法获取真正的数据源
+     * <tt>这里借用了JSF的权重随机路由算法.</tt>
      * @param dataSourceWrappers 可用的数据源集合
      * @return 数据源
      */

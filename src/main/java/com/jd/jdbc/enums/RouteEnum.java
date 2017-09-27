@@ -8,6 +8,7 @@ import com.jd.jdbc.utils.EnumUtils;
  * @since 1.0.0.Alpha
  */
 public enum RouteEnum {
+    SIMPLE("simple","简单的读写分离"),
     RANDOM("random","权重随机路由"),
     LOCALROOM("localroom","本地机房调用")
     ;

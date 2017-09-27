@@ -13,9 +13,10 @@
             <xsd:complexContent>
                 <xsd:extension base="beans:identifiedType">
                     <xsd:attribute name="cluterId" type="xsd:string" use="required"/>
-                    <xsd:attribute name="route" type="xsd:string" use="optional" default="random">
+                    <xsd:attribute name="route" type="xsd:string" use="optional" default="simple">
                         <xsd:simpleType>
                             <xsd:restriction base="xsd:string">
+                                <xsd:enumeration value="simple" />
                                 <xsd:enumeration value="random" />
                                 <xsd:enumeration value="localroom" />
                             </xsd:restriction>
@@ -33,45 +34,83 @@
             </xsd:documentation>
         </xsd:annotation>
         <xsd:complexType>
-            <xsd:complexContent>
-                <xsd:extension base="beans:identifiedType">
-                    <xsd:attribute name="defaultTargetDataSource" type="xsd:string" use="optional"/>
-                    <xsd:attribute name="targetDataSources" type="xsd:string" use="required"/>
-                </xsd:extension>
-            </xsd:complexContent>
+           <xsd:sequence>
+               <xsd:element ref="defaultTargetDataSource" minOccurs="1" maxOccurs="1"></xsd:element>
+               <xsd:element ref="targetDataSources" minOccurs="1" maxOccurs="1"></xsd:element>
+           </xsd:sequence>
+            <xsd:attribute name="id" use="required"/>
         </xsd:complexType>
     </xsd:element>
 
 
-    <xsd:element name="wrapper">
+    <xsd:element name="defaultTargetDataSource" type="dataSourceWrapper">
         <xsd:annotation>
-            <xsd:documentation>
-                <![CDATA[ 数据源包装类 ]]>
-            </xsd:documentation>
+            <xsd:documentation><![CDATA[默认数据源]]></xsd:documentation>
+        </xsd:annotation>
+    </xsd:element>
+
+
+    <xsd:element name="targetDataSources">
+        <xsd:annotation>
+            <xsd:documentation><![CDATA[目标数据源]]></xsd:documentation>
         </xsd:annotation>
         <xsd:complexType>
-            <xsd:complexContent>
-                <xsd:extension base="beans:identifiedType">
-                    <xsd:attribute name="deployRoom" type="xsd:string" use="required">
-                        <xsd:simpleType>
-                            <xsd:restriction base="xsd:string">
-                                <xsd:enumeration value="LF" />
-                                <xsd:enumeration value="MJQ" />
-                            </xsd:restriction>
-                        </xsd:simpleType>
-                    </xsd:attribute>
-                    <xsd:attribute name="role" type="xsd:string"  use="required">
-                        <xsd:simpleType>
-                            <xsd:restriction base="xsd:string">
-                                <xsd:enumeration value="MASTER" />
-                                <xsd:enumeration value="SLAVE" />
-                            </xsd:restriction>
-                        </xsd:simpleType>
-                    </xsd:attribute>
-                    <xsd:attribute name="weight" type="xsd:string" use="optional" default="0"/>
-                </xsd:extension>
-            </xsd:complexContent>
+            <xsd:sequence>
+                <xsd:element ref="list" minOccurs="1" maxOccurs="1"></xsd:element>
+            </xsd:sequence>
         </xsd:complexType>
     </xsd:element>
+
+
+    <xsd:element name="list">
+        <xsd:annotation>
+            <xsd:documentation><![CDATA[目标数据源]]></xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element ref="dataSource" minOccurs="1" maxOccurs="unbounded"></xsd:element>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+
+    <xsd:element name="dataSource" type="dataSourceWrapper">
+        <xsd:annotation>
+            <xsd:documentation><![CDATA[目标数据源]]></xsd:documentation>
+        </xsd:annotation>
+    </xsd:element>
+
+
+    <xsd:complexType name="dataSourceWrapper">
+        <xsd:annotation>
+            <xsd:documentation>
+                <![CDATA[ 数据源配置]]>
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="beans:identifiedType">
+                <xsd:attribute name="deployRoom" type="xsd:string" use="required" >
+                    <xsd:simpleType>
+                        <xsd:restriction base="xsd:string">
+                            <xsd:enumeration value="LF" />
+                            <xsd:enumeration value="MJQ" />
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:attribute>
+                <xsd:attribute name="role" type="xsd:string" use="optional" default="MASTER">
+                    <xsd:simpleType>
+                        <xsd:restriction base="xsd:string">
+                            <xsd:enumeration value="MASTER" />
+                            <xsd:enumeration value="SLAVE" />
+                        </xsd:restriction>
+                    </xsd:simpleType>
+                </xsd:attribute>
+                <xsd:attribute name="weight" type="xsd:string" use="optional" default="0"/>
+            </xsd:extension>
+        </xsd:complexContent>
+
+    </xsd:complexType>
+
+
 
 </xsd:schema>

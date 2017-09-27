@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:xjdbc="http://xjdbc.jd.com/schema/xjdbc"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+               http://xjdbc.jd.com/schema/xjdbc http://xjdbc.jd.com/schema/xjdbc/x-jdbc.xsd" default-autowire="byName">
+
+    <xjdbc:rwds id="rwDataSource"  cluterId="AppDataSource" route="simple" ></xjdbc:rwds>
+
+
+    <xjdbc:cluter id="AppDataSource">
+        <xjdbc:defaultTargetDataSource deployRoom="LF" role="MASTER" weight="0">
+        <xjdbc:targetDataSources>
+            <xjdbc:list>
+                <xjdbc:dataSource deployRoom="LF"  role="SLAVE" weight="0"/>
+            </xjdbc:list>
+        </xjdbc:targetDataSources>
+    </xjdbc:cluter>
+
+
+
+
+</beans>
