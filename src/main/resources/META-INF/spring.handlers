@@ -1,1 +1,1 @@
-http\://pop.jd.com/schema/popcache=com.jd.jdbc.spring.XJdbcNamespaceHandler
+http\://xjdbc.jd.com/schema/xjdbc=com.jd.jdbc.spring.XJdbcNamespaceHandler

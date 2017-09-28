@@ -19,26 +19,26 @@ public class SpringUtils implements ApplicationContextAware {
     /**
      * spring当前容器.
      */
-    private static ApplicationContext ioc;
+    private ApplicationContext ioc;
     /**
      * 获取spring容器时的控制锁.
      */
-    private final static ReentrantLock Lock = new ReentrantLock();
+    private final ReentrantLock Lock = new ReentrantLock();
 
     /**
      * ReentrantLock条件,进行线程间通信的条件
      */
-    private final static Condition condition = Lock.newCondition();
+    private final Condition condition = Lock.newCondition();
 
     /**
      * 容器是否启动,声明volatile避免指令重排序
      */
-    public volatile static boolean started = false;
+    public volatile boolean started = false;
 
     /**
      * 获取spring容器时,线程等待时间.
      */
-    private final static long waitTime = 60000;//等待一分钟
+    private final long waitTime = 60000;//等待一分钟
 
 
     @Override
@@ -60,7 +60,7 @@ public class SpringUtils implements ApplicationContextAware {
      * 获取spring容器,可能出现延迟赋值问题,即获取spring容器时,还未执行setApplicationContext方法,applicationContext是空.
      * 此时让当前拿容器的线程睡眠,通过condition的wait,signal实现线程通信,让设置容器的线程唤醒拿容器线程.
      */
-    public static ApplicationContext getApplicationContext() {
+    public ApplicationContext getApplicationContext() {
         while(!started){
             try {
                 Lock.lock();
@@ -76,11 +76,11 @@ public class SpringUtils implements ApplicationContextAware {
     }
 
 
-    public static <T> T getBean(Class<T> tClass)throws BeansException{
+    public <T> T getBean(Class<T> tClass)throws BeansException{
         return getApplicationContext().getBean(tClass);
     }
 
-    public static <T> T getBean(String beanId, Class<T> tClass) throws BeansException{
+    public <T> T getBean(String beanId, Class<T> tClass) throws BeansException{
         return getApplicationContext().getBean(beanId,tClass);
     }
 }

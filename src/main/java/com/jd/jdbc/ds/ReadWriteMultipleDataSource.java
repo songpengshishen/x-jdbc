@@ -31,6 +31,9 @@ public class ReadWriteMultipleDataSource extends ProxyDataSource {
      */
     private ThreadLocal<String> currentDataSource = new ThreadLocal<String>();
 
+    /**
+     * spring工具实例
+     */
     @Resource
     private SpringUtils springUtils;
 
@@ -76,7 +79,11 @@ public class ReadWriteMultipleDataSource extends ProxyDataSource {
      */
     private DataSource getDataSource(){
         String beanId =  getDataSourceBeanId();
-        return SpringUtils.getBean(beanId, DataSource.class);
+        if(null == beanId || beanId.isEmpty()){
+            //如果当前线程没有设置过数据源则使用默认数据源
+            return springUtils.getBean(dataSourceCluterConfig.getDefaultTargetDataSource().getId(),DataSource.class);
+        }
+        return springUtils.getBean(beanId, DataSource.class);
     }
 
 

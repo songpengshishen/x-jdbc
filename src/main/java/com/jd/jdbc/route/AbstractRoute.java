@@ -14,23 +14,6 @@ import java.util.List;
  */
 public abstract class AbstractRoute implements Route {
 
-
-    /**
-     * 工厂获取路由算法类
-     * @param routeName 路由算法名称
-     * @return 实现了路由算法的子类
-     */
-    public static Route getInstance(String routeName, String beanId) {
-        Route route =  null;
-        switch (RouteEnum.valueOf(routeName)){
-            case SIMPLE:route = new SimpleRoute();break;
-            case RANDOM:route = new RandomRoute();break;
-            case LOCALROOM:route = new LocalRoomRoute();break;
-            default: throw new XJdbcConfigurationException("route Configuration Error!routeName : " + routeName,beanId);
-        }
-        return route;
-    }
-
     /**
      * 路由算法
      * @param dataSourceWrappers 可用的数据源集合

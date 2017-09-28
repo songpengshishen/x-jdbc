@@ -10,6 +10,5 @@ public class XJdbcNamespaceHandler extends NamespaceHandlerSupport {
     @Override
     public void init() {
         registerBeanDefinitionParser("rwds", new RwdsDefinitionParser());
-        registerBeanDefinitionParser("cluter", new CluterDefinitionParser());
     }
 }

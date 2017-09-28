@@ -2,27 +2,18 @@
 <beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:xjdbc="http://xjdbc.jd.com/schema/xjdbc"
        xmlns="http://www.springframework.org/schema/beans"
-       xsi:schemaLocation="
-       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-               http://xjdbc.jd.com/schema/xjdbc http://xjdbc.jd.com/schema/xjdbc/x-jdbc.xsd" default-autowire="byName">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://xjdbc.jd.com/schema/xjdbc http://xjdbc.jd.com/schema/xjdbc/x-jdbc.xsd" default-autowire="byName">
 
-    <xjdbc:rwds id="rwDataSource"  cluterId="AppDataSource" route="simple" ></xjdbc:rwds>
-
-
-    <xjdbc:cluter id="AppDataSource">
-        <xjdbc:defaultTargetDataSource deployRoom="LF" role="MASTER" weight="0"/>
+    <xjdbc:rwds id="rwDataSource" route="simple">
+        <!-- 默认数据源 -->
+        <xjdbc:defaultTargetDataSource id="custom_master" deployRoom="LF" role="MASTER" weight="0"/>
         <xjdbc:targetDataSources>
-            <xjdbc:list>
-                <!-- 多个数据源 -->
-                <xjdbc:dataSource deployRoom="LF"  role="SLAVE" weight="0"/>
-                <xjdbc:dataSource deployRoom="LF"  role="SLAVE" weight="0"/>
-                <xjdbc:dataSource deployRoom="LF"  role="SLAVE" weight="0"/>
-                <xjdbc:dataSource deployRoom="LF"  role="SLAVE" weight="0"/>
-            </xjdbc:list>
+            <!-- 多个数据源 -->
+           <xjdbc:dataSource id="custom_slave" deployRoom="MJQ"  role="SLAVE" weight="1"/>
+           <xjdbc:dataSource id="custom_slave" deployRoom="MJQ"  role="SLAVE" weight="2"/>
         </xjdbc:targetDataSources>
-    </xjdbc:cluter>
-
-
+    </xjdbc:rwds>
 
 
 </beans>

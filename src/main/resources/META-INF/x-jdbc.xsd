@@ -5,49 +5,24 @@
             targetNamespace="http://xjdbc.jd.com/schema/xjdbc"
             elementFormDefault="qualified" attributeFormDefault="unqualified">
     <xsd:import namespace="http://www.springframework.org/schema/beans"/>
-    <xsd:element name="rwds">
+
+    <xsd:element name="rwds" id="rwds">
         <xsd:annotation>
             <xsd:documentation><![CDATA[ 读写分离数据源标签 集群数据源ID,路由算法默认随机 ]]></xsd:documentation>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:complexContent>
                 <xsd:extension base="beans:identifiedType">
-                    <xsd:attribute name="cluterId" type="xsd:string" use="required"/>
-                    <xsd:attribute name="route" type="xsd:string" use="optional" default="simple">
-                        <xsd:simpleType>
-                            <xsd:restriction base="xsd:string">
-                                <xsd:enumeration value="simple" />
-                                <xsd:enumeration value="random" />
-                                <xsd:enumeration value="localroom" />
-                            </xsd:restriction>
-                        </xsd:simpleType>
-                    </xsd:attribute>
+                    <xsd:sequence>
+                        <xsd:element name="defaultTargetDataSource" type="dataSourceWrapper" minOccurs="1" maxOccurs="1"></xsd:element>
+                        <xsd:element ref="targetDataSources" minOccurs="1" maxOccurs="1"></xsd:element>
+                    </xsd:sequence>
+                    <xsd:attribute name="route" type="xsd:string" use="optional" default="simple"/>
                 </xsd:extension>
             </xsd:complexContent>
         </xsd:complexType>
     </xsd:element>
 
-    <xsd:element name="cluter">
-        <xsd:annotation>
-            <xsd:documentation>
-                <![CDATA[ 数据源集群配置  targetDataSources : 目标数据源集合 defaultTargetDataSource : 默认数据源 ]]>
-            </xsd:documentation>
-        </xsd:annotation>
-        <xsd:complexType>
-           <xsd:sequence>
-               <xsd:element ref="defaultTargetDataSource" minOccurs="1" maxOccurs="1"></xsd:element>
-               <xsd:element ref="targetDataSources" minOccurs="1" maxOccurs="1"></xsd:element>
-           </xsd:sequence>
-            <xsd:attribute name="id" use="required"/>
-        </xsd:complexType>
-    </xsd:element>
-
-
-    <xsd:element name="defaultTargetDataSource" type="dataSourceWrapper">
-        <xsd:annotation>
-            <xsd:documentation><![CDATA[默认数据源]]></xsd:documentation>
-        </xsd:annotation>
-    </xsd:element>
 
 
     <xsd:element name="targetDataSources">
@@ -56,28 +31,9 @@
         </xsd:annotation>
         <xsd:complexType>
             <xsd:sequence>
-                <xsd:element ref="list" minOccurs="1" maxOccurs="1"></xsd:element>
+                <xsd:element name="dataSource" type="dataSourceWrapper" minOccurs="1" maxOccurs="unbounded"></xsd:element>
             </xsd:sequence>
         </xsd:complexType>
-    </xsd:element>
-
-
-    <xsd:element name="list">
-        <xsd:annotation>
-            <xsd:documentation><![CDATA[目标数据源]]></xsd:documentation>
-        </xsd:annotation>
-        <xsd:complexType>
-            <xsd:sequence>
-                <xsd:element ref="dataSource" minOccurs="1" maxOccurs="unbounded"></xsd:element>
-            </xsd:sequence>
-        </xsd:complexType>
-    </xsd:element>
-
-
-    <xsd:element name="dataSource" type="dataSourceWrapper">
-        <xsd:annotation>
-            <xsd:documentation><![CDATA[目标数据源]]></xsd:documentation>
-        </xsd:annotation>
     </xsd:element>
 
 
@@ -89,26 +45,11 @@
         </xsd:annotation>
         <xsd:complexContent>
             <xsd:extension base="beans:identifiedType">
-                <xsd:attribute name="deployRoom" type="xsd:string" use="required" >
-                    <xsd:simpleType>
-                        <xsd:restriction base="xsd:string">
-                            <xsd:enumeration value="LF" />
-                            <xsd:enumeration value="MJQ" />
-                        </xsd:restriction>
-                    </xsd:simpleType>
-                </xsd:attribute>
-                <xsd:attribute name="role" type="xsd:string" use="optional" default="MASTER">
-                    <xsd:simpleType>
-                        <xsd:restriction base="xsd:string">
-                            <xsd:enumeration value="MASTER" />
-                            <xsd:enumeration value="SLAVE" />
-                        </xsd:restriction>
-                    </xsd:simpleType>
-                </xsd:attribute>
+                <xsd:attribute name="deployRoom" type="xsd:string" use="required"/>
+                <xsd:attribute name="role" type="xsd:string" use="optional" default="MASTER"/>
                 <xsd:attribute name="weight" type="xsd:string" use="optional" default="0"/>
             </xsd:extension>
         </xsd:complexContent>
-
     </xsd:complexType>
 
 
