@@ -4,6 +4,7 @@ import com.jd.jdbc.ds.DataSourceWrapper;
 import com.jd.jdbc.ds.ReadWriteMultipleDataSource;
 import com.jd.jdbc.enums.RouteEnum;
 import com.jd.jdbc.route.RouteFactory;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionValidationException;
@@ -14,6 +15,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -131,13 +133,12 @@ public class RwdsDefinitionParser extends AbstractSimpleBeanDefinitionParser {
      */
     private List<BeanDefinition> createTargetDataSource(Element element){
         ManagedList  managedList = null;
-        Element targetDataSource  =  (Element)element.getElementsByTagName(TARGET_DATASOURCES_TAG_NAME).item(0);
-        Element list =  (Element)targetDataSource.getElementsByTagName(LIST_TAG_NAME).item(0);
-        NodeList nodeList = list.getElementsByTagName(DATASOURCE_TAG_NAME);
-        if(null != nodeList){
-            managedList = new ManagedList(nodeList.getLength());
-            for(int i = 0;i<nodeList.getLength();i++){
-                managedList.add(createDataSource((Element) nodeList.item(0)));
+        Element targetDataSource  =  getTargetDataSourceElement(element);
+        List<Element> dsElement = loopFindElement(targetDataSource,DATASOURCE_TAG_NAME);
+        if(CollectionUtils.isNotEmpty(dsElement)){
+            managedList = new ManagedList();
+            for(Element e : dsElement){
+                managedList.add(createDataSource(e));
             }
         }
         return managedList;
@@ -174,14 +175,33 @@ public class RwdsDefinitionParser extends AbstractSimpleBeanDefinitionParser {
 
 
     private Element getDefaultDataSourceElement(Element element){
-        NodeList nodeList = element.getElementsByTagName(DEFAULT_DATASOURCE_TAG_NAME);
-        for(int i = 0 ; i<nodeList.getLength();i++){
-              Node node = nodeList.item(i);
-              if(node.getNodeName().equals(DEFAULT_DATASOURCE_TAG_NAME)){
-                  return (Element)node;
-              }
+        //因为xsd的校验,程序走到这里肯定是有标签的,并且DEFAULT_DATASOURCE_TAG_NAME只有一个.
+        return loopFindElement(element,DEFAULT_DATASOURCE_TAG_NAME).get(0);
+    }
+
+
+    private Element getTargetDataSourceElement(Element element){
+        //因为xsd的校验,程序走到这里肯定是有标签的,并且TARGET_DATASOURCES_TAG_NAME只有一个.
+        return loopFindElement(element,TARGET_DATASOURCES_TAG_NAME).get(0);
+    }
+
+
+    private List<Element> loopFindElement(Element element,String tagName){
+        List<Element> elements = null;
+        NodeList nodeList = element.getChildNodes();
+        if(null != nodeList && nodeList.getLength()>0){
+            elements = new ArrayList<Element>(nodeList.getLength());
+            for(int i = 0 ; i<nodeList.getLength();i++){
+                Node node = nodeList.item(i);
+                if(node instanceof Element){
+                    //只有是标签元素的才进行判断,其他的都过滤
+                    if(node.getLocalName().equals(tagName) || node.getNodeName().equals(tagName)){
+                        elements.add((Element)node);
+                    }
+                }
+            }
         }
-        return null;
+        return elements;
     }
 
     /**

@@ -1,9 +1,6 @@
 package com.jd.jdbc.ds;
 
 import com.jd.jdbc.route.Route;
-import com.jd.jdbc.utils.SpringUtils;
-
-import javax.annotation.Resource;
 import javax.sql.DataSource;
 import javax.xml.crypto.Data;
 import java.sql.Connection;
@@ -30,13 +27,6 @@ public class ReadWriteMultipleDataSource extends ProxyDataSource {
      * 存放数据源的线程本地私有对象,存放了当前线程的数据源beanId
      */
     private ThreadLocal<String> currentDataSource = new ThreadLocal<String>();
-
-    /**
-     * spring工具实例
-     */
-    @Resource
-    private SpringUtils springUtils;
-
 
 
     /**
@@ -81,9 +71,9 @@ public class ReadWriteMultipleDataSource extends ProxyDataSource {
         String beanId =  getDataSourceBeanId();
         if(null == beanId || beanId.isEmpty()){
             //如果当前线程没有设置过数据源则使用默认数据源
-            return springUtils.getBean(dataSourceCluterConfig.getDefaultTargetDataSource().getId(),DataSource.class);
+            return getBean(dataSourceCluterConfig.getDefaultTargetDataSource().getId(),DataSource.class);
         }
-        return springUtils.getBean(beanId, DataSource.class);
+        return getBean(beanId, DataSource.class);
     }
 
 
@@ -129,7 +119,5 @@ public class ReadWriteMultipleDataSource extends ProxyDataSource {
     public void setDataSourceCluterConfig(DataSourceCluterConfig dataSourceCluterConfig) {
         this.dataSourceCluterConfig = dataSourceCluterConfig;
     }
-
-
 
 }

@@ -1,10 +1,7 @@
 package com.jd.jdbc.route;
 import com.jd.jdbc.ds.DataSourceWrapper;
-import com.jd.jdbc.enums.RouteEnum;
-import com.jd.jdbc.exception.XJdbcConfigurationException;
 import com.jd.jdbc.exception.XJdbcNoAliveDataSourceException;
-import com.jd.jdbc.utils.SpringUtils;
-import javax.sql.DataSource;
+
 import java.util.List;
 
 /**
