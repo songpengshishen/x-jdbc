@@ -1,19 +1,83 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:xjdbc="http://xjdbc.jd.com/schema/xjdbc"
-       xmlns="http://www.springframework.org/schema/beans"
+       xmlns="http://www.springframework.org/schema/beans" xmlns:aop="http://www.springframework.org/schema/aop"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-       http://xjdbc.jd.com/schema/xjdbc http://xjdbc.jd.com/schema/xjdbc/x-jdbc.xsd" default-autowire="byName">
+       http://xjdbc.jd.com/schema/xjdbc http://xjdbc.jd.com/schema/xjdbc/x-jdbc.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd"
+       default-autowire="byName">
+
+
+    <aop:aspectj-autoproxy proxy-target-class="true" />
 
     <xjdbc:rwds id="rwDataSource" route="simple">
         <!-- 默认数据源 -->
-        <xjdbc:defaultTargetDataSource id="custom_master" deployRoom="LF" role="MASTER" weight="0"/>
         <xjdbc:targetDataSources>
             <!-- 多个数据源 -->
-           <xjdbc:dataSource id="custom_slave" deployRoom="MJQ"  role="SLAVE" weight="1"/>
-           <xjdbc:dataSource id="custom_slave" deployRoom="MJQ"  role="SLAVE" weight="2"/>
+           <xjdbc:dataSource id="master" deployRoom="LF"  role="MASTER" weight="0"/>
+           <xjdbc:dataSource id="slave01" deployRoom="MJQ"  role="SLAVE" weight="10"/>
+           <xjdbc:dataSource id="slave02" deployRoom="MJQ"  role="SLAVE" weight="0"/>
         </xjdbc:targetDataSources>
     </xjdbc:rwds>
 
+    <!-- 自己的master数据源 -->
+    <bean id="master" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+        <property name="url" value="jdbc:mysql://192.168.195.161:3306/my-test-db-01" />
+        <property name="username" value="admin" />
+        <property name="password" value="admin" />
+        <property name="initialSize" value="0" />
+        <property name="maxActive" value="15" />
+        <property name="maxIdle" value="5" />
+        <property name="minIdle" value="2" />
+        <property name="maxWait" value="15000" />
+        <property name="timeBetweenEvictionRunsMillis" value="60000" />
+        <property name="minEvictableIdleTimeMillis" value="180000" />
+    </bean>
 
+
+    <!-- 自己slave01数据源 -->
+    <bean id="slave01" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+        <property name="url" value="jdbc:mysql://192.168.195.161:3306/my-test-db-02" />
+        <property name="username" value="admin" />
+        <property name="password" value="admin" />
+        <property name="initialSize" value="0" />
+        <property name="maxActive" value="15" />
+        <property name="maxIdle" value="5" />
+        <property name="minIdle" value="2" />
+        <property name="maxWait" value="15000" />
+        <property name="timeBetweenEvictionRunsMillis" value="60000" />
+        <property name="minEvictableIdleTimeMillis" value="180000" />
+    </bean>
+
+
+    <!-- 自己slave02数据源 -->
+    <bean id="slave02" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+        <property name="url" value="jdbc:mysql://192.168.195.161:3306/my-test-db-03" />
+        <property name="username" value="admin" />
+        <property name="password" value="admin" />
+        <property name="initialSize" value="0" />
+        <property name="maxActive" value="15" />
+        <property name="maxIdle" value="5" />
+        <property name="minIdle" value="2" />
+        <property name="maxWait" value="15000" />
+        <property name="timeBetweenEvictionRunsMillis" value="60000" />
+        <property name="minEvictableIdleTimeMillis" value="180000" />
+    </bean>
+
+
+    <!-- ibatis -->
+    <bean id="sqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+        <property name="configLocations">
+            <list>
+                <value>classpath:sqlmap-config.xml</value>
+            </list>
+        </property>
+        <property name="dataSource" ref="rwDataSource" />
+    </bean>
+
+    <bean id="sqlMapClientTemplate" class="org.springframework.orm.ibatis.SqlMapClientTemplate">
+        <property name="sqlMapClient" ref="sqlMapClient" />
+    </bean>
 </beans>

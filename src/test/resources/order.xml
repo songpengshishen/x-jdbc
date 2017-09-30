@@ -1,0 +1,37 @@
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+        "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="order">
+	<typeAlias alias="order" type="com.jd.jdbc.test.Order"/>
+
+	<sql id="allColumns">
+		ID,ORDER_ID,USER_ID,PRICE,CREATE_DATE,
+	</sql>
+	
+	<resultMap id="orderMap" class="order">
+		<result property="id" column="ID"/>
+		<result property="orderId" column="ORDER_ID"/>
+		<result property="userId" column="USER_ID"/>
+		<result property="price" column="PRICE"/>
+		<result property="createDate" column="CREATE_DATE"/>
+	</resultMap>
+
+	<!-- 根据venderId统计审核通过专场数量 -->
+	<select id="select" resultMap="orderMap">
+		select * from ORDER_ITEM
+	</select>
+
+	<insert id="insert" parameterClass="order">
+		insert into ORDER_ITEM
+		(<include refid="allColumns"/>)
+		values(
+		#id#,
+		#orderId#,
+		#userId#,
+		#price#,
+		#createDate#,
+		)
+	</insert>
+
+
+</sqlMap>

@@ -69,31 +69,31 @@ public abstract class ProxyDataSource implements DataSource,ApplicationContextAw
 
     @Override
     public PrintWriter getLogWriter() throws SQLException {
-        throw new UnsupportedOperationException("Not supported getLogWriter by ProxyDataSource");
+        return getCurrentDataSource().getLogWriter();
     }
 
 
     @Override
     public void setLogWriter(PrintWriter out) throws SQLException {
-        throw new UnsupportedOperationException("Not supported setLogWriter by ProxyDataSource");
+          getCurrentDataSource().setLogWriter(out);
     }
 
 
     @Override
     public void setLoginTimeout(int seconds) throws SQLException {
-        throw new UnsupportedOperationException("Not supported setLoginTimeout by ProxyDataSource");
+        getCurrentDataSource().setLoginTimeout(seconds);
     }
 
 
     @Override
     public int getLoginTimeout() throws SQLException {
-         return 0;
+       return getCurrentDataSource().getLoginTimeout();
     }
 
 
     @Override
     public Logger getParentLogger() throws SQLFeatureNotSupportedException {
-        return Logger.getLogger(this.getClass().getName());
+        return getCurrentDataSource().getParentLogger();
     }
 
     private <T>  boolean isDataSource(Class<T> tclass){

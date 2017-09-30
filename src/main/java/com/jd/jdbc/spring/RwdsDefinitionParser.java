@@ -47,10 +47,6 @@ public class RwdsDefinitionParser extends AbstractSimpleBeanDefinitionParser {
     private final String TARGET_DATASOURCES_TAG_NAME = "targetDataSources";
 
 
-    /**
-     * dataSource标签名称
-     */
-    private final String LIST_TAG_NAME = "list";
 
     /**
      * dataSource标签名称
@@ -127,7 +123,7 @@ public class RwdsDefinitionParser extends AbstractSimpleBeanDefinitionParser {
 
 
     /**
-     * 创建
+     * 创建目标数据源
      * @param element
      * @return
      */

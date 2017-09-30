@@ -80,6 +80,10 @@ public class DataSourceCluterConfig implements InitializingBean{
                             throw new XJdbcConfigurationException("dataSource definition Error!No such Role : " + dataSource.getRole(),dataSource.getId());
                         }
                     }
+
+                    if(null == this.master){
+                        throw new XJdbcConfigurationException("master is Require!");
+                    }
                     if(defaultTargetDataSource == null){
                         //没有设置默认数据源时,将主库数据源设置为默认数据源
                         defaultTargetDataSource = this.master;
@@ -90,7 +94,6 @@ public class DataSourceCluterConfig implements InitializingBean{
             }
         }
     }
-
 
     public List<DataSourceWrapper> getTargetDataSources() {
         return targetDataSources;
