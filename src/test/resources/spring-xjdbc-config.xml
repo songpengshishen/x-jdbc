@@ -10,6 +10,7 @@
     <aop:aspectj-autoproxy proxy-target-class="true" />
 
     <xjdbc:rwds id="rwDataSource" route="simple">
+        <xjdbc:defaultTargetDataSource id="master" deployRoom="LF"  role="MASTER" weight="0"/>
         <!-- 默认数据源 -->
         <xjdbc:targetDataSources>
             <!-- 多个数据源 -->
