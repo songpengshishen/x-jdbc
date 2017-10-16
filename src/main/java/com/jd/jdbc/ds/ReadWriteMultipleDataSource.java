@@ -70,8 +70,8 @@ public class ReadWriteMultipleDataSource extends ProxyDataSource {
     private DataSource getDataSource(){
         String beanId =  getDataSourceBeanId();
         if(null == beanId || beanId.isEmpty()){
-            //如果当前线程没有设置过数据源则使用默认数据源
-            return getBean(dataSourceCluterConfig.getDefaultTargetDataSource().getId(),DataSource.class);
+            //如果当前线程没有设置过数据源则使用主库数据源
+            return getBean(dataSourceCluterConfig.getMaster().getId(),DataSource.class);
         }
         return getBean(beanId, DataSource.class);
     }

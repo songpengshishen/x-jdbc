@@ -4,12 +4,17 @@ import com.jd.jdbc.ann.DataSourceSwitch;
 import com.jd.jdbc.ds.ReadWriteMultipleDataSource;
 import com.jd.jdbc.enums.ReadWriteDataSourceEnum;
 
+import com.jd.jdbc.spring.RwdsDefinitionParser;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 
@@ -21,8 +26,11 @@ import java.lang.reflect.Method;
  * @author <a href=mailto:wangsongpeng@jd.com>王宋鹏</a>
  * @since 1.0.0.Alpha
  */
+@Component
 @Aspect
-public class DataSourceSwitchAspect {
+public class DataSourceSwitchAspect implements InitializingBean{
+
+    private static final Logger log = LoggerFactory.getLogger(DataSourceSwitchAspect.class);
 
     @Resource
     private ReadWriteMultipleDataSource dataSource;
@@ -46,8 +54,9 @@ public class DataSourceSwitchAspect {
                 dataSource.setDataSourceBeanId(dataSource.getDataSourceCluterConfig().getMaster().getId());
             }else{
                 //否则数据源为slave,我们通过路由从从库中拿一个数据源
-                dataSource.setDataSourceBeanId( dataSource.getRoute().route(dataSource.getDataSourceCluterConfig().getSlaveList()));
+                dataSource.setDataSourceBeanId(dataSource.getRoute().route(dataSource.getDataSourceCluterConfig().getSlaveList()));
             }
+            result = jp.proceed();
         } catch (Throwable t) {
             dataSource.clearDataSource();
             throw t;
@@ -64,8 +73,10 @@ public class DataSourceSwitchAspect {
     }
 
 
-
-
-
-
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        if(log.isInfoEnabled()){
+            log.info("DataSourceSwitchAspect Init Success!");
+        }
+    }
 }

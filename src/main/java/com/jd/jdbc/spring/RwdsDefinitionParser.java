@@ -5,6 +5,8 @@ import com.jd.jdbc.ds.ReadWriteMultipleDataSource;
 import com.jd.jdbc.enums.RouteEnum;
 import com.jd.jdbc.route.RouteFactory;
 import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionValidationException;
@@ -25,6 +27,8 @@ import java.util.List;
  */
 public class RwdsDefinitionParser extends AbstractSimpleBeanDefinitionParser {
 
+    private static final Logger log = LoggerFactory.getLogger(RwdsDefinitionParser.class);
+
     /**
      * id标签名称
      */
@@ -36,15 +40,15 @@ public class RwdsDefinitionParser extends AbstractSimpleBeanDefinitionParser {
     private final String ROUTE_TAG_NAME = "route";
 
     /**
-     * defaultTargetDataSource标签名称
+     * masterTargetDataSource标签名称
      */
-    private final String DEFAULT_DATASOURCE_TAG_NAME = "defaultTargetDataSource";
+    private final String MASTER_DATASOURCE_TAG_NAME = "masterDataSource";
 
 
     /**
-     * targetDataSources标签名称
+     * slaveDataSources标签名称
      */
-    private final String TARGET_DATASOURCES_TAG_NAME = "targetDataSources";
+    private final String SLAVE_DATASOURCES_TAG_NAME = "slaveDataSources";
 
 
 
@@ -80,6 +84,9 @@ public class RwdsDefinitionParser extends AbstractSimpleBeanDefinitionParser {
      */
     @Override
     protected void doParse(Element element,ParserContext parserContext,BeanDefinitionBuilder builder) {
+        if(log.isDebugEnabled()){
+            log.debug("Start Parse X-jdbc Spring Tag...");
+        }
         String idVal = element.getAttribute(ID_TAG_NAME);//beanID
         //当前容器是否已有重复BeanID
         if(parserContext.getRegistry().containsBeanDefinition(idVal)){
@@ -115,21 +122,21 @@ public class RwdsDefinitionParser extends AbstractSimpleBeanDefinitionParser {
      */
     private BeanDefinition createDataSourceCluter(Element element){
         BeanDefinitionBuilder builder = getBeanDefinitionBuilder(DataSourceCluterConfig.class);
-        builder.addPropertyValue(DEFAULT_DATASOURCE_TAG_NAME,createDataSource(getDefaultDataSourceElement(element)));
-        builder.addPropertyValue(TARGET_DATASOURCES_TAG_NAME,createTargetDataSource(element));
+        builder.addPropertyValue("master",createDataSource(getMasterDataSourceElement(element)));
+        builder.addPropertyValue("slaveList",createSlaveDataSource(element));
         beanPostProcess(builder);
         return builder.getBeanDefinition();
     }
 
 
     /**
-     * 创建目标数据源
+     * 创建slave数据源
      * @param element
      * @return
      */
-    private List<BeanDefinition> createTargetDataSource(Element element){
+    private List<BeanDefinition> createSlaveDataSource(Element element){
         ManagedList  managedList = null;
-        Element targetDataSource  =  getTargetDataSourceElement(element);
+        Element targetDataSource  =  getSlaveDataSourceElement(element);
         List<Element> dsElement = loopFindElement(targetDataSource,DATASOURCE_TAG_NAME);
         if(CollectionUtils.isNotEmpty(dsElement)){
             managedList = new ManagedList();
@@ -169,19 +176,29 @@ public class RwdsDefinitionParser extends AbstractSimpleBeanDefinitionParser {
         builder.setScope(BeanDefinition.SCOPE_SINGLETON);
     }
 
-
-    private Element getDefaultDataSourceElement(Element element){
-        //因为xsd的校验,程序走到这里肯定是有标签的,并且DEFAULT_DATASOURCE_TAG_NAME只有一个.
-        return loopFindElement(element,DEFAULT_DATASOURCE_TAG_NAME).get(0);
+    /**
+     * 获取Master数据源标签
+     * @param element
+     * @return
+     */
+    private Element getMasterDataSourceElement(Element element){
+        //因为xsd的校验,程序走到这里肯定是有标签的,并且MASTER_DATASOURCE_TAG_NAME只有一个.
+        return loopFindElement(element,MASTER_DATASOURCE_TAG_NAME).get(0);
     }
 
 
-    private Element getTargetDataSourceElement(Element element){
-        //因为xsd的校验,程序走到这里肯定是有标签的,并且TARGET_DATASOURCES_TAG_NAME只有一个.
-        return loopFindElement(element,TARGET_DATASOURCES_TAG_NAME).get(0);
+    private Element getSlaveDataSourceElement(Element element){
+        //因为xsd的校验,程序走到这里肯定是有标签的,并且SLAVE_DATASOURCES_TAG_NAME只有一个.
+        return loopFindElement(element,SLAVE_DATASOURCES_TAG_NAME).get(0);
     }
 
-
+    /**
+     * 从指定的element寻址所有的tagName标签
+     * 添加到list中并返回
+     * @param element 父标签
+     * @param tagName 寻址的标签名
+     * @return element中所有的tagName标签
+     */
     private List<Element> loopFindElement(Element element,String tagName){
         List<Element> elements = null;
         NodeList nodeList = element.getChildNodes();
@@ -201,7 +218,7 @@ public class RwdsDefinitionParser extends AbstractSimpleBeanDefinitionParser {
     }
 
     /**
-     *返回该标签所对应的Class.
+     * 返回该标签所对应的Class.
      * @param element
      * @return
      */

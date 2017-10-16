@@ -19,16 +19,6 @@ public class DataSourceCluterConfig implements InitializingBean{
    private static final Logger log = LoggerFactory.getLogger(DataSourceCluterConfig.class);
 
     /**
-     * 提供给应用用户配置的目标数据源集合
-     */
-    private List<DataSourceWrapper> targetDataSources;
-
-    /**
-     * 默认的目标数据源
-     */
-    private DataSourceWrapper defaultTargetDataSource;
-
-    /**
      * 主库的数据源集合
      */
     private DataSourceWrapper master;
@@ -60,55 +50,40 @@ public class DataSourceCluterConfig implements InitializingBean{
         if(!initialization){
             synchronized (lock){
                 if(!initialization){
-                    if(CollectionUtils.isEmpty(targetDataSources)){
-                        throw new IllegalArgumentException("property targetDataSources is not null!");
-                    }
-                    this.slaveList = new CopyOnWriteArrayList<DataSourceWrapper>();//初始化从库list
+                    checkMasterDataSource();
+                    checkSlaveDataSource();
+                    CopyOnWriteArrayList<DataSourceWrapper> slaveListCopy = new CopyOnWriteArrayList<DataSourceWrapper>();//初始化从库list
                     //迭代所有目标数据源,set到各属性中
-                    for(DataSourceWrapper dataSource:targetDataSources){
-                        if(DataSourceRoleEnum.valueOf(dataSource.getRole()) == DataSourceRoleEnum.MASTER){
-                            //只可以有一个主库数据源
-                            if(null != this.master){
-                                throw new XJdbcConfigurationException("master definition Repeat!",dataSource.getId());
-                            }
-                            if(null == this.master){
-                                this.master = dataSource; //设置master
-                            }
-                        }else if(DataSourceRoleEnum.valueOf(dataSource.getRole()) == DataSourceRoleEnum.SLAVE){
-                            slaveList.add(dataSource);//添加从库
+                    for(DataSourceWrapper dataSource:slaveList){
+                        if(DataSourceRoleEnum.valueOf(dataSource.getRole()) == DataSourceRoleEnum.SLAVE){
+                            slaveListCopy.add(dataSource);//添加从库
+                        }else if(DataSourceRoleEnum.valueOf(dataSource.getRole()) == DataSourceRoleEnum.MASTER){
+                            throw new XJdbcConfigurationException("dataSource definition Error!Slave Contain Master: " + dataSource.getRole(),dataSource.getId());
                         }else{
                             throw new XJdbcConfigurationException("dataSource definition Error!No such Role : " + dataSource.getRole(),dataSource.getId());
                         }
                     }
-
-                    if(null == this.master){
-                        throw new XJdbcConfigurationException("master is Require!");
-                    }
-                    if(defaultTargetDataSource == null){
-                        //没有设置默认数据源时,将主库数据源设置为默认数据源
-                        defaultTargetDataSource = this.master;
-                    }
+                    slaveList = slaveListCopy;//重新引用赋值
                     initialization = true; //初始化成功
-                    log.error("DataSourceCluterConfig Init Success!");
+                    if(log.isInfoEnabled()){
+                        log.info("DataSourceCluterConfig Init Success!");
+                    }
                 }
             }
         }
     }
 
-    public List<DataSourceWrapper> getTargetDataSources() {
-        return targetDataSources;
+
+    private void checkMasterDataSource(){
+        if(null == this.master){
+            throw new XJdbcConfigurationException("master is Require!");
+        }
     }
 
-    public void setTargetDataSources(List<DataSourceWrapper> targetDataSources) {
-        this.targetDataSources = targetDataSources;
-    }
-
-    public DataSourceWrapper getDefaultTargetDataSource() {
-        return defaultTargetDataSource;
-    }
-
-    public void setDefaultTargetDataSource(DataSourceWrapper defaultTargetDataSource) {
-        this.defaultTargetDataSource = defaultTargetDataSource;
+    private void checkSlaveDataSource(){
+        if(CollectionUtils.isEmpty(slaveList)){
+            throw new IllegalArgumentException("property targetDataSources is not null!");
+        }
     }
 
     public DataSourceWrapper getMaster() {
@@ -119,5 +94,11 @@ public class DataSourceCluterConfig implements InitializingBean{
         return slaveList;
     }
 
+    public void setMaster(DataSourceWrapper master) {
+        this.master = master;
+    }
 
+    public void setSlaveList(List<DataSourceWrapper> slaveList) {
+        this.slaveList = slaveList;
+    }
 }
