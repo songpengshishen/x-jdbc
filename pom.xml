@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.jd.nb</groupId>
     <artifactId>nb-framework-xjdbc</artifactId>
-    <version>1.0.0.Alpha</version>
+    <version>1.0.0.Alpha-SNAPSHOT</version>
     <name>${project.artifactId}</name>
     <packaging>jar</packaging>
     <properties>
