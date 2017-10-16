@@ -19,10 +19,10 @@
     <context:component-scan base-package="com.jd.jdbc"></context:component-scan>
 
     <xjdbc:rwds id="rwDataSource" route="RANDOM">
+        <!-- 主库数据源 -->
         <xjdbc:masterDataSource id="master" deployRoom="LF" role="MASTER" weight="0"/>
-        <!-- 默认数据源 -->
         <xjdbc:slaveDataSources>
-            <!-- 多个数据源 -->
+            <!-- 多个从库数据源 -->
            <xjdbc:dataSource id="slave01" deployRoom="MJQ"  role="SLAVE" weight="10"/>
            <xjdbc:dataSource id="slave02" deployRoom="MJQ"  role="SLAVE" weight="0"/>
         </xjdbc:slaveDataSources>
