@@ -26,21 +26,20 @@ public class RandomRoute extends AbstractRoute implements Route{
     public String doRoute(List<DataSourceWrapper> dataSourceWrappers) {
         DataSourceWrapper dataSourceWrapper = null;//数据源包装类
         final List<DataSourceWrapper> ds = dataSourceWrappers;
-        int length = ds.size(); // 总个数
+        int length = ds.size(); // 数据源总个数
         int totalWeight = 0; // 总权重
-        boolean sameWeight = true; // 权重是否都一样
+        boolean sameWeight = true; //权重是否都一样
         for (int i = 0; i < length; i++) {
             int weight = getWeight(ds.get(i));
             totalWeight += weight; // 累计总权重
-            if (sameWeight && i > 0
-                    && weight != getWeight(ds.get(i - 1))) {
+            if (sameWeight && i > 0 && weight != getWeight(ds.get(i - 1))) {
                 sameWeight = false; // 计算所有权重是否一样
             }
         }
         if (totalWeight > 0 && !sameWeight) {
             // 如果权重不相同且权重大于0则按总权重数随机
             int offset = random.nextInt(totalWeight);
-            // 并确定随机值落在哪个片断上
+            // 并确定随机值落在哪个片断上,权重越大的数据源包含的随机片段就多,这样权重大的数据源就容易选举出.
             for (int i = 0; i < length; i++) {
                 offset -= getWeight(ds.get(i));
                 if (offset < 0) {
@@ -54,9 +53,6 @@ public class RandomRoute extends AbstractRoute implements Route{
         }
         return dataSourceWrapper.getId();
     }
-
-
-
 
 }
 

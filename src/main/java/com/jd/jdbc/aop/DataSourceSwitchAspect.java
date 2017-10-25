@@ -1,6 +1,7 @@
 package com.jd.jdbc.aop;
 import com.jd.jdbc.ann.DataSourceSwitch;
 
+import com.jd.jdbc.ds.DataSourceWrapper;
 import com.jd.jdbc.ds.ReadWriteMultipleDataSource;
 import com.jd.jdbc.enums.ReadWriteDataSourceEnum;
 
@@ -15,10 +16,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 
 import java.lang.reflect.Method;
+import java.util.List;
 
 
 /**
@@ -50,11 +53,19 @@ public class DataSourceSwitchAspect implements InitializingBean{
             //获取执行方法上的注解
             DataSourceSwitch e = method.getAnnotation(DataSourceSwitch.class);
             if (e  == null || e.type().equals(ReadWriteDataSourceEnum.WRITE)) {
-                //如果没有配置注解,或者为WRITE 默认数据源为master
+                //如果注解为空,或者为WRITE 默认数据源为master
                 dataSource.setDataSourceBeanId(dataSource.getDataSourceCluterConfig().getMaster().getId());
             }else{
-                //否则数据源为slave,我们通过路由从从库中拿一个数据源
-                dataSource.setDataSourceBeanId(dataSource.getRoute().route(dataSource.getDataSourceCluterConfig().getSlaveList()));
+                //否则数据源为slave,我们通过路由算法选举出从库中的某一个数据源
+                String dsBeanId = dataSource.getRoute().route(dataSource.getDataSourceCluterConfig().getSlaveList());
+                //如果从库中没有获取到,则设置默认的主库
+                if(null == dsBeanId || dsBeanId.equals("")){
+                    if(log.isInfoEnabled()){
+                        log.info("Slave is Empty,Switch Master!");
+                    }
+                    dsBeanId = dataSource.getDataSourceCluterConfig().getMaster().getId();
+                }
+                dataSource.setDataSourceBeanId(dsBeanId);
             }
             result = jp.proceed();
         } catch (Throwable t) {
@@ -76,7 +87,7 @@ public class DataSourceSwitchAspect implements InitializingBean{
     @Override
     public void afterPropertiesSet() throws Exception {
         if(log.isInfoEnabled()){
-            log.info("DataSourceSwitchAspect Init Success!");
+            log.info("DataSourceSwitchAspect Init Success!dataSource is:"+dataSource);
         }
     }
 }

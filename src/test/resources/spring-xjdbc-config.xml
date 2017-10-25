@@ -23,8 +23,8 @@
         <xjdbc:masterDataSource id="master" deployRoom="LF" role="MASTER" weight="0"/>
         <xjdbc:slaveDataSources>
             <!-- 多个从库数据源 -->
-           <xjdbc:dataSource id="slave01" deployRoom="MJQ"  role="SLAVE" weight="10"/>
-           <xjdbc:dataSource id="slave02" deployRoom="MJQ"  role="SLAVE" weight="0"/>
+           <xjdbc:dataSource id="slave01" deployRoom="MJQ"  role="SLAVE" weight="3"/>
+           <xjdbc:dataSource id="slave02" deployRoom="MJQ"  role="SLAVE" weight="6"/>
         </xjdbc:slaveDataSources>
     </xjdbc:rwds>
 

@@ -1,5 +1,6 @@
 package com.jd.jdbc.ds;
 
+import com.jd.jdbc.exception.XJdbcNoAliveDataSourceException;
 import com.jd.jdbc.route.Route;
 import javax.sql.DataSource;
 import javax.xml.crypto.Data;
@@ -57,7 +58,7 @@ public class ReadWriteMultipleDataSource extends ProxyDataSource {
     protected DataSource getCurrentDataSource() {
         DataSource dataSource = getDataSource();
         if(null == dataSource){
-            throw new NullPointerException("dataSource is Empty!");
+            throw new XJdbcNoAliveDataSourceException();
         }
         return dataSource;
     }

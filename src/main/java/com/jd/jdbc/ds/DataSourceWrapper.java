@@ -43,4 +43,32 @@ public class DataSourceWrapper {
     public void setWeight(int weight) {
         this.weight = weight;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("DataSourceWrapper:[id = ").append(this.id).append(",");
+        sb.append("deployRoom = ").append(this.deployRoom).append(",");
+        sb.append("role = ").append(this.role).append(",");
+        sb.append("weight = ").append(this.weight).append("]");
+        return sb.toString();
+    }
+
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {return true;}
+        if (!(obj instanceof DataSourceWrapper)) {return false;}
+        DataSourceWrapper dataSourceWrapper = (DataSourceWrapper) obj;
+        if(this.id != dataSourceWrapper.getId())return false;
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return 31 * this.id.hashCode();
+    }
+
+
+
 }

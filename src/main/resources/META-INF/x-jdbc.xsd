@@ -47,7 +47,7 @@
             <xsd:extension base="beans:identifiedType">
                 <xsd:attribute name="deployRoom" type="deployRoom" use="required"/>
                 <xsd:attribute name="role" type="role" use="required"/>
-                <xsd:attribute name="weight" type="xsd:string" use="optional" default="0"/>
+                <xsd:attribute name="weight" type="weight" use="optional" default="0"/>
             </xsd:extension>
         </xsd:complexContent>
     </xsd:complexType>
@@ -74,6 +74,15 @@
         <xsd:restriction base="xsd:string">
             <xsd:enumeration value="MASTER"/>
             <xsd:enumeration value="SLAVE"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+
+    <xsd:simpleType name="weight" >
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="0"/>
+            <xsd:enumeration value="3"/>
+            <xsd:enumeration value="6"/>
         </xsd:restriction>
     </xsd:simpleType>
 

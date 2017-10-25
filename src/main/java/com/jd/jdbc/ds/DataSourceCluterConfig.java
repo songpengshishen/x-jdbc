@@ -7,7 +7,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * 数据源集群配置类,配置了所有的数据源.
@@ -52,18 +54,18 @@ public class DataSourceCluterConfig implements InitializingBean{
                 if(!initialization){
                     checkMasterDataSource();
                     checkSlaveDataSource();
-                    CopyOnWriteArrayList<DataSourceWrapper> slaveListCopy = new CopyOnWriteArrayList<DataSourceWrapper>();//初始化从库list
+                    CopyOnWriteArraySet<DataSourceWrapper> slaveSetCopy = new CopyOnWriteArraySet<DataSourceWrapper>();//初始化从库Set
                     //迭代所有目标数据源,set到各属性中
                     for(DataSourceWrapper dataSource:slaveList){
                         if(DataSourceRoleEnum.valueOf(dataSource.getRole()) == DataSourceRoleEnum.SLAVE){
-                            slaveListCopy.add(dataSource);//添加从库
+                            slaveSetCopy.add(dataSource);//添加从库
                         }else if(DataSourceRoleEnum.valueOf(dataSource.getRole()) == DataSourceRoleEnum.MASTER){
                             throw new XJdbcConfigurationException("dataSource definition Error!Slave Contain Master: " + dataSource.getRole(),dataSource.getId());
                         }else{
                             throw new XJdbcConfigurationException("dataSource definition Error!No such Role : " + dataSource.getRole(),dataSource.getId());
                         }
                     }
-                    slaveList = slaveListCopy;//重新引用赋值
+                    slaveList = new CopyOnWriteArrayList<DataSourceWrapper>(slaveSetCopy);//重新引用赋值
                     initialization = true; //初始化成功
                     if(log.isInfoEnabled()){
                         log.info("DataSourceCluterConfig Init Success!");
@@ -90,12 +92,12 @@ public class DataSourceCluterConfig implements InitializingBean{
         return master;
     }
 
-    public List<DataSourceWrapper> getSlaveList() {
-        return slaveList;
-    }
-
     public void setMaster(DataSourceWrapper master) {
         this.master = master;
+    }
+
+    public List<DataSourceWrapper> getSlaveList() {
+        return slaveList;
     }
 
     public void setSlaveList(List<DataSourceWrapper> slaveList) {
