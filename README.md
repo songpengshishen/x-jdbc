@@ -8,6 +8,9 @@ x-jdbc介绍
 二: 关于x
 ---
    之所以起名x是因为这个小框架我写的时候就是为了玩(提升下自己技术).对就是这么随意..
+ 
+ 
+ http://cf.jd.com/pages/viewpage.action?pageId=97477441  
 
 
 
