@@ -52,27 +52,27 @@ public class DataSourceSwitchAspect implements InitializingBean{
         try {
             //获取执行方法上的注解
             DataSourceSwitch e = method.getAnnotation(DataSourceSwitch.class);
-            if (e  == null || e.type().equals(ReadWriteDataSourceEnum.WRITE)) {
-                //如果注解为空,或者为WRITE 默认数据源为master
-                dataSource.setDataSourceBeanId(dataSource.getDataSourceCluterConfig().getMaster().getId());
-            }else{
-                //否则数据源为slave,我们通过路由算法选举出从库中的某一个数据源
-                String dsBeanId = dataSource.getRoute().route(dataSource.getDataSourceCluterConfig().getSlaveList());
-                //如果从库中没有获取到,则设置默认的主库
-                if(null == dsBeanId || dsBeanId.equals("")){
-                    if(log.isInfoEnabled()){
-                        log.info("Slave is Empty,Switch Master!");
+            if(!dataSource.isOnlyMaster()){
+                if (e  == null || e.type().equals(ReadWriteDataSourceEnum.WRITE)) {
+                    //如果注解为空,或者为WRITE 默认数据源为master
+                    dataSource.setDataSourceBeanId(dataSource.getDataSourceCluterConfig().getMaster().getId());
+                    dataSource.setMasterRouteOnly(Boolean.TRUE);
+                }else{
+                    //否则数据源为slave,我们通过路由算法选举出从库中的某一个数据源
+                    String dsBeanId = dataSource.getRoute().route(dataSource.getDataSourceCluterConfig().getSlaveList());
+                    //如果从库中没有获取到,则设置默认的主库
+                    if(null == dsBeanId || dsBeanId.equals("")){
+                        if(log.isInfoEnabled()){
+                            log.info("Slave is Empty,Switch Master!");
+                        }
+                        dsBeanId = dataSource.getDataSourceCluterConfig().getMaster().getId();
                     }
-                    dsBeanId = dataSource.getDataSourceCluterConfig().getMaster().getId();
+                    dataSource.setDataSourceBeanId(dsBeanId);
                 }
-                dataSource.setDataSourceBeanId(dsBeanId);
             }
             result = jp.proceed();
         } catch (Throwable t) {
-            dataSource.clearDataSource();
             throw t;
-        }finally {
-            dataSource.clearDataSource();
         }
         return result;
     }

@@ -31,6 +31,11 @@ public class ReadWriteMultipleDataSource extends ProxyDataSource {
 
 
     /**
+     * 存放当前数据源的模式
+     */
+    private ThreadLocal<Boolean> onlyMaster = new ThreadLocal<Boolean>();
+
+    /**
      * DataSource接口中获取连接
      * @return
      * @throws SQLException
@@ -71,7 +76,9 @@ public class ReadWriteMultipleDataSource extends ProxyDataSource {
     private DataSource getDataSource(){
         String beanId =  getDataSourceBeanId();
         if(null == beanId || beanId.isEmpty()){
-            //如果当前线程没有设置过数据源则使用主库数据源
+            //如果当前线程没有设置过数据源则默认使用主库数据源
+            setDataSourceBeanId(dataSourceCluterConfig.getMaster().getId());
+            setMasterRouteOnly(Boolean.TRUE);
             return getBean(dataSourceCluterConfig.getMaster().getId(),DataSource.class);
         }
         return getBean(beanId, DataSource.class);
@@ -121,4 +128,11 @@ public class ReadWriteMultipleDataSource extends ProxyDataSource {
         this.dataSourceCluterConfig = dataSourceCluterConfig;
     }
 
+    public void setMasterRouteOnly(Boolean mode) {
+       this.onlyMaster.set(mode);
+    }
+
+    public Boolean isOnlyMaster () {
+        return this.onlyMaster.get();
+    }
 }
