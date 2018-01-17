@@ -1,7 +1,4 @@
 package com.jd.jdbc.spring;
-import com.jd.jdbc.ds.DataSourceCluterConfig;
-import com.jd.jdbc.ds.DataSourceWrapper;
-import com.jd.jdbc.ds.ReadWriteMultipleDataSource;
 import com.jd.jdbc.enums.RouteEnum;
 import com.jd.jdbc.route.RouteFactory;
 import org.apache.commons.collections.CollectionUtils;

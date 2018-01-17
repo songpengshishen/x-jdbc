@@ -1,4 +1,4 @@
-package com.jd.jdbc.ds;
+package com.jd.jdbc.core.ds;
 
 
 import org.springframework.beans.BeansException;

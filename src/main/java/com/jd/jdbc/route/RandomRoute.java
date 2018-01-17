@@ -1,6 +1,4 @@
 package com.jd.jdbc.route;
-import com.jd.jdbc.ds.DataSourceWrapper;
-import javax.sql.DataSource;
 import java.util.List;
 import java.util.Random;
 

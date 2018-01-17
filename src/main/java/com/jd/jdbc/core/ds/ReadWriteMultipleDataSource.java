@@ -1,9 +1,9 @@
-package com.jd.jdbc.ds;
+package com.jd.jdbc.core.ds;
 
 import com.jd.jdbc.exception.XJdbcNoAliveDataSourceException;
 import com.jd.jdbc.route.Route;
+
 import javax.sql.DataSource;
-import javax.xml.crypto.Data;
 import java.sql.Connection;
 import java.sql.SQLException;
 

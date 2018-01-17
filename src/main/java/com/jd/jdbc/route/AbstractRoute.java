@@ -1,8 +1,5 @@
 package com.jd.jdbc.route;
 
-import com.jd.jdbc.aop.DataSourceSwitchAspect;
-import com.jd.jdbc.ds.DataSourceWrapper;
-import com.jd.jdbc.exception.XJdbcNoAliveDataSourceException;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
