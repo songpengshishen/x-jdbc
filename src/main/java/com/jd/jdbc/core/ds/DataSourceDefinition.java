@@ -16,8 +16,6 @@ public final class DataSourceDefinition{
     private DataSource dataSource;
 
 
-
-
     public DataSourceDefinition(String name,String deployRoom,String role,int weight,DataSource dataSource){
            this.name = name;
            this.deployRoom = deployRoom;

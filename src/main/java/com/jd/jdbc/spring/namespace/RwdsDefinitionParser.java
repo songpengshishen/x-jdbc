@@ -1,4 +1,4 @@
-package com.jd.jdbc.spring;
+package com.jd.jdbc.spring.namespace;
 import com.jd.jdbc.enums.RouteEnum;
 import com.jd.jdbc.route.RouteFactory;
 import org.apache.commons.collections.CollectionUtils;

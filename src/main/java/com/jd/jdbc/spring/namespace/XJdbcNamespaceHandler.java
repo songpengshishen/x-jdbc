@@ -1,5 +1,6 @@
-package com.jd.jdbc.spring;
+package com.jd.jdbc.spring.namespace;
 import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
+
 /**
  * xjdbc Spring自定义标签处理
  * @author <a href=mailto:wangsongpeng@jd.com>王宋鹏</a>
