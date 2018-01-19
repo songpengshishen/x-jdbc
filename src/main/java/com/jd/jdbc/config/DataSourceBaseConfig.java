@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author <a href=mailto:wangsongpeng@jd.com>王宋鹏</a>
  * @since 2.0.0.Alpha
  */
-public abstract class AbstractDataSourceConfig implements DataSourceConfig{
+public abstract class DataSourceBaseConfig {
 
     /**
      * 数据源配置名称
@@ -36,7 +36,7 @@ public abstract class AbstractDataSourceConfig implements DataSourceConfig{
      */
     protected static final AtomicInteger SHARDING_NAME_COUNTER = new AtomicInteger(0);
 
-    public AbstractDataSourceConfig(String name){
+    public DataSourceBaseConfig(String name){
         if(StringUtils.isBlank(name)){
             this.name = generatorName();
         }else{
@@ -55,6 +55,9 @@ public abstract class AbstractDataSourceConfig implements DataSourceConfig{
 
 
     protected abstract String generatorName();
+
+
+
 
 
 }

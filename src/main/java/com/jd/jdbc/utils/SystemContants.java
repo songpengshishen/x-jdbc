@@ -10,13 +10,13 @@ public class SystemContants  {
     /**
      * 最小权重值
      */
-    public int MIN_WEIGHT = 0;
+    public static final int MIN_WEIGHT = 0;
     /**
      * 中间权重值
      */
-    public int MIDDLE_WEIGHT = 3;
+    public static final int MIDDLE_WEIGHT = 3;
     /**
      * 最大权重值
      */
-    public int MAX_WEIGHT = 6;
+    public static final int MAX_WEIGHT = 6;
 }

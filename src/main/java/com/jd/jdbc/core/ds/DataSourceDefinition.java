@@ -1,4 +1,6 @@
 package com.jd.jdbc.core.ds;
+;
+import com.jd.jdbc.utils.SystemContants;
 
 import javax.sql.DataSource;
 
@@ -14,6 +16,11 @@ public final class DataSourceDefinition{
     private String role;/*数据源角色 master/slave */
     private int weight = 0;/*数据源权重值,没有选择时默认为0*/
     private DataSource dataSource;
+
+
+    public DataSourceDefinition(String name,String deployRoom,String role,DataSource dataSource){
+       this(name,deployRoom,role, SystemContants.MIDDLE_WEIGHT,dataSource);
+    }
 
 
     public DataSourceDefinition(String name,String deployRoom,String role,int weight,DataSource dataSource){

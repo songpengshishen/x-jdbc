@@ -1,6 +1,7 @@
 package com.jd.jdbc.core.build;
 
-import com.jd.jdbc.config.DataSourceConfig;
+import com.jd.jdbc.config.ShardingDataSourceBaseConfig;
+import com.jd.jdbc.core.ds.ShardingDataSource;
 
 import javax.sql.DataSource;
 
@@ -9,9 +10,7 @@ import javax.sql.DataSource;
  * @author <a href=mailto:wangsongpeng@jd.com>王宋鹏</a>
  * @since 2.0.0.Alpha
  */
-public class ShardingDataSourceBuilder implements DataSourceBuilder {
-
-
+public class ShardingDataSourceBuilder extends AbstractDataSourceBuilder<ShardingDataSourceBaseConfig> {
 
     /**
      * 通过数据源配置类构建数据源
@@ -19,7 +18,7 @@ public class ShardingDataSourceBuilder implements DataSourceBuilder {
      * @return 数据源
      */
     @Override
-    public DataSource build(DataSourceConfig dataSourceConfig) {
-        return null;
+    public DataSource doBuild(ShardingDataSourceBaseConfig dataSourceConfig) {
+        return new ShardingDataSource(dataSourceConfig);
     }
 }

@@ -1,6 +1,13 @@
 package com.jd.jdbc.core.build;
 
-import com.jd.jdbc.config.DataSourceConfig;
+import com.google.common.base.Preconditions;
+import com.jd.jdbc.config.DataSourceGroupBaseConfig;
+import com.jd.jdbc.core.ds.ReadWriteMultipleDataSource;
+import com.jd.jdbc.enums.RouteEnum;
+import com.jd.jdbc.route.RouteFactory;
+import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 
@@ -9,17 +16,21 @@ import javax.sql.DataSource;
  * @author <a href=mailto:wangsongpeng@jd.com>王宋鹏</a>
  * @since 2.0.0.Alpha
  */
-public class DataSourceGroupBuilder implements DataSourceBuilder {
+public class DataSourceGroupBuilder extends AbstractDataSourceBuilder<DataSourceGroupBaseConfig> {
 
+    private static Logger logger = LoggerFactory.getLogger(DataSourceGroupBuilder.class);
 
-
-    /**
-     * 通过数据源配置类构建数据源
-     * @param dataSourceConfig 数据源配置类
-     * @return 数据源
-     */
     @Override
-    public DataSource build(DataSourceConfig dataSourceConfig) {
-        return null;
+    protected DataSource doBuild(DataSourceGroupBaseConfig dataSourceGroupConfig) {
+        Preconditions.checkNotNull(dataSourceGroupConfig.getMasterDataSource(),"MasterDataSource cannot be null.");
+        Preconditions.checkArgument(CollectionUtils.isEmpty(dataSourceGroupConfig.getSlaveDataSources()),"SlaveDataSource cannot be null.");
+        if(null == dataSourceGroupConfig.getRoute()){
+            logger.warn("DataSourceGroupBaseConfig.getRoute() Is Null,Use Simple Route");
+            dataSourceGroupConfig.setRoute(RouteFactory.getInstance(RouteEnum.SIMPLE.name()));
+        }
+
+        return new ReadWriteMultipleDataSource(dataSourceGroupConfig);
     }
+
+
 }

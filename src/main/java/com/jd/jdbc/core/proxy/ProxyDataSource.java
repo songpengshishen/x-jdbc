@@ -1,7 +1,4 @@
 package com.jd.jdbc.core.proxy;
-
-
-
 import javax.sql.DataSource;
 import java.io.PrintWriter;
 import java.sql.SQLException;

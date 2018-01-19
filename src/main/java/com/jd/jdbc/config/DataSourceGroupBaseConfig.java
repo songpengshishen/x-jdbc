@@ -12,7 +12,7 @@ import java.util.List;
  * @author <a href=mailto:wangsongpeng@jd.com>王宋鹏</a>
  * @since 2.0.0.Alpha
  */
-public class DataSourceGroupConfig extends AbstractDataSourceConfig {
+public class DataSourceGroupBaseConfig extends DataSourceBaseConfig {
 
 
     /**
@@ -38,7 +38,7 @@ public class DataSourceGroupConfig extends AbstractDataSourceConfig {
      * @param masterDataSource 主数据源
      * @param slaveDataSources 从集合数据源
      */
-    public DataSourceGroupConfig(DataSourceDefinition masterDataSource,List<DataSourceDefinition> slaveDataSources){
+    public DataSourceGroupBaseConfig(DataSourceDefinition masterDataSource, List<DataSourceDefinition> slaveDataSources){
         this(null,masterDataSource,slaveDataSources,null);
     }
 
@@ -51,7 +51,7 @@ public class DataSourceGroupConfig extends AbstractDataSourceConfig {
      * @param slaveDataSources 从集合数据源
      * @param route 路由算法
      */
-    public DataSourceGroupConfig(String name,DataSourceDefinition masterDataSource,List<DataSourceDefinition> slaveDataSources,Route route){
+    public DataSourceGroupBaseConfig(String name, DataSourceDefinition masterDataSource, List<DataSourceDefinition> slaveDataSources, Route route){
            super(name);
            this.masterDataSource = masterDataSource;
            this.slaveDataSources = slaveDataSources;

@@ -1,6 +1,6 @@
 package com.jd.jdbc.core.build;
 
-import com.jd.jdbc.config.DataSourceConfig;
+import com.jd.jdbc.config.DataSourceBaseConfig;
 
 import javax.sql.DataSource;
 
@@ -17,5 +17,5 @@ public interface DataSourceBuilder {
      * @param dataSourceConfig 数据源配置类
      * @return 数据源
      */
-     DataSource build(DataSourceConfig dataSourceConfig);
+     DataSource build(DataSourceBaseConfig dataSourceConfig);
 }

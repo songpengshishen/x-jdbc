@@ -8,21 +8,21 @@ import java.util.List;
  * @author <a href=mailto:wangsongpeng@jd.com>王宋鹏</a>
  * @since 2.0.0.Alpha
  */
-public class ShardingDataSourceConfig extends AbstractDataSourceConfig{
+public class ShardingDataSourceBaseConfig extends DataSourceBaseConfig {
 
 
     /**
      * 所有数据源组配置集合,每一个代表一个主从架构
      */
-    private List<DataSourceGroupConfig> dataSourceGroupConfigList = new ArrayList<DataSourceGroupConfig>();
+    private List<DataSourceGroupBaseConfig> dataSourceGroupConfigList = new ArrayList<DataSourceGroupBaseConfig>();
 
 
-    public ShardingDataSourceConfig(List<DataSourceGroupConfig> dataSourceGroupConfigs){
+    public ShardingDataSourceBaseConfig(List<DataSourceGroupBaseConfig> dataSourceGroupConfigs){
         this(null,dataSourceGroupConfigs);
     }
 
 
-    public ShardingDataSourceConfig(String name,List<DataSourceGroupConfig> dataSourceGroupConfigs){
+    public ShardingDataSourceBaseConfig(String name, List<DataSourceGroupBaseConfig> dataSourceGroupConfigs){
         super(name);
         this.dataSourceGroupConfigList = dataSourceGroupConfigs;
     }
@@ -33,11 +33,11 @@ public class ShardingDataSourceConfig extends AbstractDataSourceConfig{
         return SHARDING_NAME_PREFIX + SHARDING_NAME_COUNTER.getAndIncrement();
     }
 
-    public List<DataSourceGroupConfig> getDataSourceGroupConfigList() {
+    public List<DataSourceGroupBaseConfig> getDataSourceGroupConfigList() {
         return dataSourceGroupConfigList;
     }
 
-    public void setDataSourceGroupConfigList(List<DataSourceGroupConfig> dataSourceGroupConfigList) {
+    public void setDataSourceGroupConfigList(List<DataSourceGroupBaseConfig> dataSourceGroupConfigList) {
         this.dataSourceGroupConfigList = dataSourceGroupConfigList;
     }
 }
