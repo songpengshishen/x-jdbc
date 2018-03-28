@@ -1,4 +1,5 @@
 package com.jd.jdbc.route;
+import com.jd.jdbc.core.DataSourceDefinition;
 import java.util.List;
 import java.util.Random;
 
@@ -17,13 +18,13 @@ public class RandomRoute extends AbstractRoute implements Route{
     /**
      * 根据路由算法获取真正的数据源
      * <tt>这里借用了JSF的权重随机路由算法.</tt>
-     * @param dataSourceWrappers 可用的数据源集合
+     * @param dataSourceDefinitions 可用的数据源集合
      * @return 数据源
      */
     @Override
-    public String doRoute(List<DataSourceWrapper> dataSourceWrappers) {
-        DataSourceWrapper dataSourceWrapper = null;//数据源包装类
-        final List<DataSourceWrapper> ds = dataSourceWrappers;
+    public DataSourceDefinition doRoute(List<DataSourceDefinition> dataSourceDefinitions) {
+        DataSourceDefinition dataSourceDefinition = null;//数据源包装类
+        final List<DataSourceDefinition> ds = dataSourceDefinitions;
         int length = ds.size(); // 数据源总个数
         int totalWeight = 0; // 总权重
         boolean sameWeight = true; //权重是否都一样
@@ -41,15 +42,15 @@ public class RandomRoute extends AbstractRoute implements Route{
             for (int i = 0; i < length; i++) {
                 offset -= getWeight(ds.get(i));
                 if (offset < 0) {
-                    dataSourceWrapper = ds.get(i);
+                    dataSourceDefinition = ds.get(i);
                     break;
                 }
             }
         } else {
             // 如果权重相同或权重为0则均等随机
-            dataSourceWrapper = ds.get(random.nextInt(length));
+            dataSourceDefinition = ds.get(random.nextInt(length));
         }
-        return dataSourceWrapper.getId();
+        return dataSourceDefinition;
     }
 
 }

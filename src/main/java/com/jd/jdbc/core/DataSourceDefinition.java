@@ -1,8 +1,10 @@
-package com.jd.jdbc.core.ds;
-;
+package com.jd.jdbc.core;
+
 import com.jd.jdbc.utils.SystemContants;
 
 import javax.sql.DataSource;
+
+;
 
 /**
  * 数据源定义类.包含了

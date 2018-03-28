@@ -2,7 +2,6 @@ package com.jd.jdbc.core.build;
 
 import com.google.common.base.Preconditions;
 import com.jd.jdbc.config.DataSourceGroupBaseConfig;
-import com.jd.jdbc.core.ds.ReadWriteMultipleDataSource;
 import com.jd.jdbc.enums.RouteEnum;
 import com.jd.jdbc.route.RouteFactory;
 import org.apache.commons.collections.CollectionUtils;

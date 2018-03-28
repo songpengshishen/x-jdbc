@@ -1,7 +1,9 @@
-package com.jd.jdbc.core.ds;
+package com.jd.jdbc.core;
+
 import com.google.common.base.Preconditions;
 import com.jd.jdbc.enums.DataSourceRoleEnum;
 import com.jd.jdbc.enums.DataSourceRoomEnum;
+
 import javax.sql.DataSource;
 
 
@@ -17,7 +19,7 @@ public final class DataSourceDefinitionFactory {
      * 创建数据源定义类
      * @return
      */
-    public DataSourceDefinition createDataSourceDefinition(String name,String deployRoom,String role,int weight,DataSource dataSource){
+    public DataSourceDefinition createDataSourceDefinition(String name, String deployRoom, String role, int weight, DataSource dataSource){
         Preconditions.checkNotNull(dataSource,"dataSource cannot be null.");
         Preconditions.checkNotNull(name,"name cannot be null.");
         Preconditions.checkNotNull(deployRoom,"deployRoom cannot be null.");
@@ -31,7 +33,7 @@ public final class DataSourceDefinitionFactory {
      * 创建数据源定义类
      * @return
      */
-    public DataSourceDefinition createDataSourceDefinition(String name,String deployRoom,String role,DataSource dataSource){
+    public DataSourceDefinition createDataSourceDefinition(String name, String deployRoom, String role, DataSource dataSource){
         Preconditions.checkNotNull(dataSource,"dataSource cannot be null.");
         Preconditions.checkNotNull(name,"name cannot be null.");
         Preconditions.checkNotNull(deployRoom,"deployRoom cannot be null.");

@@ -1,10 +1,12 @@
 package com.jd.jdbc.config;
 
-import com.jd.jdbc.core.ds.DataSourceDefinition;
+import com.jd.jdbc.core.DataSourceDefinition;
 import com.jd.jdbc.enums.RouteEnum;
 import com.jd.jdbc.route.Route;
 import com.jd.jdbc.route.RouteFactory;
 import org.apache.commons.collections.CollectionUtils;
+
+import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
 /**
@@ -25,6 +27,12 @@ public class DataSourceGroupBaseConfig extends DataSourceBaseConfig {
      * 从库集合数据源定义
      */
     private List<DataSourceDefinition> slaveDataSources;
+
+
+    /**
+     * 所有的数据源集合
+     */
+    private List<DataSource> allDataSource;
 
 
     /**
@@ -60,15 +68,21 @@ public class DataSourceGroupBaseConfig extends DataSourceBaseConfig {
            }else{
                this.route = route;
            }
-
+          initAllDataSource(masterDataSource,slaveDataSources);
     }
-
 
     @Override
     protected String generatorName() {
         return GROUP_NAME_PREFIX+GROUP_NAME_COUNTER.getAndIncrement();
     }
 
+    private void initAllDataSource(DataSourceDefinition masterDataSource,List<DataSourceDefinition> slaveDataSources){
+        allDataSource = new ArrayList<DataSource>(slaveDataSources.size() + 1);
+        allDataSource.add(masterDataSource.getDataSource());
+        for(DataSourceDefinition dsDefinition : slaveDataSources){
+            allDataSource.add(dsDefinition.getDataSource());
+        }
+    }
 
     public DataSourceDefinition getMasterDataSource() {
         return masterDataSource;
@@ -100,4 +114,11 @@ public class DataSourceGroupBaseConfig extends DataSourceBaseConfig {
         }
         this.slaveDataSources.add(slaveDataSource);
     }
+
+
+    public List<DataSource> getAllDataSource() {
+        return allDataSource;
+    }
+
+
 }
