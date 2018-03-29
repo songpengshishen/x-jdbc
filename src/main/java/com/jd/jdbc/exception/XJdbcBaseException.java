@@ -13,7 +13,7 @@ public class XJdbcBaseException extends RuntimeException{
 
     public XJdbcBaseException(String message){super(message);}
 
-    protected XJdbcBaseException(String message,Throwable cause){
+    public XJdbcBaseException(String message, Throwable cause){
         super(message,cause);
     }
 

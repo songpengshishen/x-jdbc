@@ -1,5 +1,6 @@
 package com.jd.jdbc.core.readwrite;
 import java.sql.Connection;
+import java.sql.SQLException;
 
 /**
  * Title :主从数据源连接接口
@@ -9,4 +10,9 @@ import java.sql.Connection;
  */
 public interface MasterSlaveConnection extends Connection {
 
+    /**
+     * 决定真实的数据源连接
+     * @return
+     */
+    Connection determineRealConnection(String sql) throws SQLException;
 }
