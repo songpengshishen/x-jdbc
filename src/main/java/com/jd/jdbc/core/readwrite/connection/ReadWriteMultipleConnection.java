@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 import java.sql.*;
 
 /**
- * Title :主从数据源连接实现
+ * Title :读写数据源连接实现
  * Description: 实现JDBC Connection所有方法</br>
  * @author <a href=mailto:wangsongpeng@jd.com>王宋鹏</a>
  * @since 2018/03/28
@@ -14,12 +14,6 @@ import java.sql.*;
 public class ReadWriteMultipleConnection extends AbstractMasterSlaveConnection{
 
     private static final Logger log = LoggerFactory.getLogger(ReadWriteMultipleConnection.class);
-
-    /**
-     * 读写数据源
-     */
-    private ReadWriteMultipleDataSource rwDataSource;
-
 
     public ReadWriteMultipleConnection(ReadWriteMultipleDataSource dataSource){
            this(dataSource,null,null);
@@ -32,17 +26,16 @@ public class ReadWriteMultipleConnection extends AbstractMasterSlaveConnection{
 
     @Override
     public Connection determineRealConnection(String sql) {
-
         if(null != targetConnection){
             return targetConnection;
         }
-
         try {
             if(StringUtils.isBlank(userName) && StringUtils.isBlank(passWord)){
                 targetConnection = rwDataSource.determineRealDataSource(sql).getConnection();
             }else{
                 targetConnection = rwDataSource.determineRealDataSource(sql).getConnection(userName,passWord);
             }
+            replayMethodsInvocation(targetConnection);
         }catch (Exception e){
             log.error("determineRealConnection Happen Exception",e);
         }
@@ -110,4 +103,9 @@ public class ReadWriteMultipleConnection extends AbstractMasterSlaveConnection{
         return determineRealConnection(sql).prepareStatement(sql,columnNames);
     }
 
+    @Override
+    public void close() throws SQLException {
+        ReadWriteMultipleDataSource.clearOnlyMasterFlag();
+        super.close();
+    }
 }

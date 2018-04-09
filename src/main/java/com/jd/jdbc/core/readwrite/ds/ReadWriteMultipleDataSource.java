@@ -1,4 +1,5 @@
 package com.jd.jdbc.core.readwrite.ds;
+import com.jd.jdbc.config.DataSourceGroupBaseConfig;
 import com.jd.jdbc.core.SqlAnalysisEngine;
 import com.jd.jdbc.core.domain.Sql;
 import com.jd.jdbc.core.readwrite.connection.ReadWriteMultipleConnection;
@@ -14,6 +15,11 @@ import java.sql.SQLException;
  * @since 2018/03/28
  */
 public class ReadWriteMultipleDataSource extends AbstractMasterSlaveDataSource {
+
+
+    public ReadWriteMultipleDataSource(DataSourceGroupBaseConfig dataSourceGroupBaseConfig){
+        super(dataSourceGroupBaseConfig);
+    }
 
     /*
      * 当前线程是否是Master执行标志
@@ -59,6 +65,5 @@ public class ReadWriteMultipleDataSource extends AbstractMasterSlaveDataSource {
     public static void clearOnlyMasterFlag(){
         ONLY_MASTER_FLAG.remove();
     }
-
 
 }

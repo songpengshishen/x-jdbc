@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 /**
- * 抽象的主从多数据源实现类
+ * 抽象的读写多数据源实现类
  * 负责DataSource中的通用辅助方法
  * @author <a href=mailto:wangsongpeng@jd.com>王宋鹏</a>
  * @since 2018/03/28
@@ -20,10 +20,15 @@ public abstract class AbstractMasterSlaveDataSource extends ProxyWrapper impleme
     /**
      * 数据源组配置,一般读写分离使用该配置
      */
-    private DataSourceGroupBaseConfig dataSourceGroupBaseConfig;
+    protected DataSourceGroupBaseConfig dataSourceGroupBaseConfig;
 
 
     private PrintWriter logWriter = new PrintWriter(System.out);
+
+
+    public AbstractMasterSlaveDataSource(DataSourceGroupBaseConfig dataSourceGroupBaseConfig){
+         this.dataSourceGroupBaseConfig = dataSourceGroupBaseConfig;
+    }
 
     @Override
     public PrintWriter getLogWriter() throws SQLException {
