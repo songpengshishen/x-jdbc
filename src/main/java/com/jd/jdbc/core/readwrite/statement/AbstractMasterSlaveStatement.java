@@ -187,62 +187,83 @@ public abstract class AbstractMasterSlaveStatement extends ProxyWrapper implemen
 
     @Override
     public void addBatch(String sql) throws SQLException {
+        if (null != targetStatement) {
+             targetStatement.addBatch(sql);
+        }
         throw new SQLFeatureNotSupportedException("unsupported addBatch(String sql) By AbstractMasterSlaveStatement");
     }
 
     @Override
     public void clearBatch() throws SQLException {
+        if (null != targetStatement) {
+            targetStatement.clearBatch();
+        }
         throw new SQLFeatureNotSupportedException("unsupported clearBatch() By AbstractMasterSlaveStatement");
     }
 
     @Override
     public int[] executeBatch() throws SQLException {
+        if (null != targetStatement) {
+            targetStatement.executeBatch();
+        }
         throw new SQLFeatureNotSupportedException("unsupported executeBatch() By AbstractMasterSlaveStatement");
     }
 
     @Override
     public Connection getConnection() throws SQLException {
-        return null;
+        return masterSlaveConnection;
     }
 
     @Override
     public boolean getMoreResults(int current) throws SQLException {
-        return false;
-    }
-
-    @Override
-    public ResultSet getGeneratedKeys() throws SQLException {
-        return null;
+        if (null != targetStatement) {
+            targetStatement.getMoreResults(current);
+        }
+        throw new SQLFeatureNotSupportedException("unsupported getMoreResults(int current) By AbstractMasterSlaveStatement");
     }
 
 
     @Override
     public int getResultSetHoldability() throws SQLException {
-        return 0;
+        if (null != targetStatement) {
+            targetStatement.getResultSetHoldability();
+        }
+        throw new SQLFeatureNotSupportedException("unsupported getResultSetHoldability() By AbstractMasterSlaveStatement");
     }
 
     @Override
     public boolean isClosed() throws SQLException {
-        return false;
+        return closed;
     }
 
     @Override
     public void setPoolable(boolean poolable) throws SQLException {
-
+        this.poolable = poolable;
+        if (null != this.targetStatement) {
+            targetStatement.setPoolable(poolable);
+        } else {
+            recordMethodInvocation(Statement.class, "setPoolable", new Class[]{boolean.class}, new Object[]{poolable});
+        }
     }
 
     @Override
     public boolean isPoolable() throws SQLException {
-        return false;
+        return poolable;
     }
 
     @Override
     public void closeOnCompletion() throws SQLException {
-
+        if (null != targetStatement) {
+            targetStatement.closeOnCompletion();
+        }
+        throw new SQLFeatureNotSupportedException("unsupported closeOnCompletion() By AbstractMasterSlaveStatement");
     }
 
     @Override
     public boolean isCloseOnCompletion() throws SQLException {
-        return false;
+        if (null != targetStatement) {
+            targetStatement.isCloseOnCompletion();
+        }
+        throw new SQLFeatureNotSupportedException("unsupported isCloseOnCompletion() By AbstractMasterSlaveStatement");
     }
 }
