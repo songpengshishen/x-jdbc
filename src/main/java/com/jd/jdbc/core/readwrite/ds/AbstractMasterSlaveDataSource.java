@@ -42,12 +42,12 @@ public abstract class AbstractMasterSlaveDataSource extends ProxyWrapper impleme
 
     @Override
     public void setLoginTimeout(int seconds) throws SQLException {
-        throw new SQLFeatureNotSupportedException("unsupported setLoginTimeout(int seconds) By ReadWriteMultipleDataSource");
+        throw new SQLFeatureNotSupportedException("unsupported setLoginTimeout(int seconds) By StandardMasterSlaveDataSource");
     }
 
     @Override
     public int getLoginTimeout() throws SQLException {
-        throw new SQLFeatureNotSupportedException("unsupported getLoginTimeout() By ReadWriteMultipleDataSource");
+        throw new SQLFeatureNotSupportedException("unsupported getLoginTimeout() By StandardMasterSlaveDataSource");
     }
 
     @Override

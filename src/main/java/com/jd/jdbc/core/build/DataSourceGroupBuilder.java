@@ -2,7 +2,7 @@ package com.jd.jdbc.core.build;
 
 import com.google.common.base.Preconditions;
 import com.jd.jdbc.config.DataSourceGroupBaseConfig;
-import com.jd.jdbc.core.readwrite.ds.ReadWriteMultipleDataSource;
+import com.jd.jdbc.core.readwrite.ds.StandardMasterSlaveDataSource;
 import com.jd.jdbc.enums.RouteEnum;
 import com.jd.jdbc.route.RouteFactory;
 import org.apache.commons.collections.CollectionUtils;
@@ -29,7 +29,7 @@ public class DataSourceGroupBuilder extends AbstractDataSourceBuilder<DataSource
             dataSourceGroupConfig.setRoute(RouteFactory.getInstance(RouteEnum.SIMPLE.name()));
         }
 
-        return new ReadWriteMultipleDataSource(dataSourceGroupConfig);
+        return new StandardMasterSlaveDataSource(dataSourceGroupConfig);
     }
 
 

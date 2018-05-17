@@ -1,27 +1,29 @@
 package com.jd.jdbc.core.readwrite.connection;
-import com.jd.jdbc.core.readwrite.ds.ReadWriteMultipleDataSource;
+import com.jd.jdbc.core.readwrite.MasterSlaveDataSource;
+import com.jd.jdbc.core.readwrite.ds.StandardMasterSlaveDataSource;
+import com.jd.jdbc.core.readwrite.statement.StandardMasterSlaveStatement;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.sql.*;
 
 /**
- * Title :读写数据源连接实现
+ * Title :标准的读写数据源连接实现,通过决策数据源获取数据源连接
  * Description: 实现JDBC Connection所有方法</br>
  * @author <a href=mailto:wangsongpeng@jd.com>王宋鹏</a>
  * @since 2018/03/28
  */
-public class ReadWriteMultipleConnection extends AbstractMasterSlaveConnection{
+public class StandardMasterSlaveConnection extends AbstractMasterSlaveConnection{
 
-    private static final Logger log = LoggerFactory.getLogger(ReadWriteMultipleConnection.class);
+    private static final Logger log = LoggerFactory.getLogger(StandardMasterSlaveConnection.class);
 
-    public ReadWriteMultipleConnection(ReadWriteMultipleDataSource dataSource){
+    public StandardMasterSlaveConnection(MasterSlaveDataSource dataSource){
            this(dataSource,null,null);
     }
 
-    public ReadWriteMultipleConnection(ReadWriteMultipleDataSource dataSource,String userName,String passWord){
+    public StandardMasterSlaveConnection(MasterSlaveDataSource dataSource, String userName, String passWord){
         super(userName,passWord);
-        this.rwDataSource = dataSource;
+        this.masterSlaveDataSource = dataSource;
     }
 
     @Override
@@ -31,9 +33,9 @@ public class ReadWriteMultipleConnection extends AbstractMasterSlaveConnection{
         }
         try {
             if(StringUtils.isBlank(userName) && StringUtils.isBlank(passWord)){
-                targetConnection = rwDataSource.determineRealDataSource(sql).getConnection();
+                targetConnection = masterSlaveDataSource.determineRealDataSource(sql).getConnection();
             }else{
-                targetConnection = rwDataSource.determineRealDataSource(sql).getConnection(userName,passWord);
+                targetConnection = masterSlaveDataSource.determineRealDataSource(sql).getConnection(userName,passWord);
             }
             replayMethodsInvocation(targetConnection);
         }catch (Exception e){
@@ -44,7 +46,7 @@ public class ReadWriteMultipleConnection extends AbstractMasterSlaveConnection{
 
     @Override
     public Statement createStatement() throws SQLException {
-        return null;
+        return new StandardMasterSlaveStatement(this);
     }
 
     @Override
@@ -59,7 +61,7 @@ public class ReadWriteMultipleConnection extends AbstractMasterSlaveConnection{
 
     @Override
     public Statement createStatement(int resultSetType, int resultSetConcurrency) throws SQLException {
-        return null;
+         return new StandardMasterSlaveStatement(this,resultSetType,resultSetConcurrency);
     }
 
     @Override
@@ -75,7 +77,7 @@ public class ReadWriteMultipleConnection extends AbstractMasterSlaveConnection{
 
     @Override
     public Statement createStatement(int resultSetType, int resultSetConcurrency, int resultSetHoldability) throws SQLException {
-        return null;
+        return new StandardMasterSlaveStatement(this,resultSetType,resultSetConcurrency,resultSetHoldability);
     }
 
     @Override
@@ -105,7 +107,7 @@ public class ReadWriteMultipleConnection extends AbstractMasterSlaveConnection{
 
     @Override
     public void close() throws SQLException {
-        ReadWriteMultipleDataSource.clearOnlyMasterFlag();
+        StandardMasterSlaveDataSource.clearOnlyMasterFlag();
         super.close();
     }
 }

@@ -1,7 +1,8 @@
 package com.jd.jdbc.core.readwrite.connection;
 import com.jd.jdbc.core.ProxyWrapper;
 import com.jd.jdbc.core.readwrite.MasterSlaveConnection;
-import com.jd.jdbc.core.readwrite.ds.ReadWriteMultipleDataSource;
+import com.jd.jdbc.core.readwrite.MasterSlaveDataSource;
+
 import java.sql.*;
 import java.util.Map;
 import java.util.Properties;
@@ -18,7 +19,7 @@ public abstract class AbstractMasterSlaveConnection extends ProxyWrapper  implem
     /**
      * 读写数据源
      */
-    protected ReadWriteMultipleDataSource rwDataSource;
+    protected MasterSlaveDataSource masterSlaveDataSource;
 
     /**
      * 用户名
@@ -305,7 +306,7 @@ public abstract class AbstractMasterSlaveConnection extends ProxyWrapper  implem
         if(null != targetConnection){
             databaseMetaData = targetConnection.getMetaData();
         }else{
-           targetConnection = this.rwDataSource.getDataSourceGroupBaseConfig().getMasterDataSource().getDataSource().getConnection();
+           targetConnection = this.masterSlaveDataSource.getDataSourceGroupBaseConfig().getMasterDataSource().getDataSource().getConnection();
            replayMethodsInvocation(targetConnection);
            databaseMetaData =  targetConnection.getMetaData();
         }

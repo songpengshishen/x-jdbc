@@ -11,7 +11,7 @@ import java.sql.Statement;
  */
 public interface MasterSlaveStatement extends Statement {
     /**
-     * 决定真实的Statement
+     * 通过Sql决策真实的Statement
      * @return
      */
     Connection determineRealStatement(String sql) throws SQLException;

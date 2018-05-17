@@ -11,7 +11,7 @@ import java.sql.SQLException;
 public interface MasterSlaveConnection extends Connection {
 
     /**
-     * 决定真实的数据源连接
+     * 通过Sql决策真实的数据源连接
      * @return
      */
     Connection determineRealConnection(String sql) throws SQLException;

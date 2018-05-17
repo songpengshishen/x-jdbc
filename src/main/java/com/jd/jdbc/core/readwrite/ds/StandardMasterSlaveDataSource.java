@@ -2,7 +2,7 @@ package com.jd.jdbc.core.readwrite.ds;
 import com.jd.jdbc.config.DataSourceGroupBaseConfig;
 import com.jd.jdbc.core.SqlAnalysisEngine;
 import com.jd.jdbc.core.domain.Sql;
-import com.jd.jdbc.core.readwrite.connection.ReadWriteMultipleConnection;
+import com.jd.jdbc.core.readwrite.connection.StandardMasterSlaveConnection;
 import com.jd.jdbc.enums.SQLType;
 import com.jd.jdbc.exception.XJdbcBaseException;
 import javax.sql.DataSource;
@@ -10,14 +10,14 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
- * 读写多数据源类,本身作为一个数据源提供给应用使用配置,包含当前应用配置的数据源集群类
+ * 标准的读写多数据源类,本身作为一个数据源提供给应用使用配置,包含当前应用配置的数据源集群类
  * @author <a href=mailto:wangsongpeng@jd.com>王宋鹏</a>
  * @since 2018/03/28
  */
-public class ReadWriteMultipleDataSource extends AbstractMasterSlaveDataSource {
+public class StandardMasterSlaveDataSource extends AbstractMasterSlaveDataSource {
 
 
-    public ReadWriteMultipleDataSource(DataSourceGroupBaseConfig dataSourceGroupBaseConfig){
+    public StandardMasterSlaveDataSource(DataSourceGroupBaseConfig dataSourceGroupBaseConfig){
         super(dataSourceGroupBaseConfig);
     }
 
@@ -53,12 +53,12 @@ public class ReadWriteMultipleDataSource extends AbstractMasterSlaveDataSource {
 
     @Override
     public Connection getConnection() throws SQLException {
-        return new ReadWriteMultipleConnection(this);
+        return new StandardMasterSlaveConnection(this);
     }
 
     @Override
     public Connection getConnection(String username, String password) throws SQLException {
-        return new ReadWriteMultipleConnection(this,username,password);
+        return new StandardMasterSlaveConnection(this,username,password);
     }
 
 

@@ -1,4 +1,6 @@
 package com.jd.jdbc.core.readwrite;
+import com.jd.jdbc.config.DataSourceGroupBaseConfig;
+
 import javax.sql.DataSource;
 import java.util.List;
 
@@ -10,6 +12,13 @@ import java.util.List;
  */
 public interface MasterSlaveDataSource extends DataSource {
 
+
+    /**
+     * 获取主从数据源拍集群配置
+     * @return
+     */
+    DataSourceGroupBaseConfig getDataSourceGroupBaseConfig();
+
     /**
      * 获取所有的目标数据源
      * @return
@@ -17,7 +26,7 @@ public interface MasterSlaveDataSource extends DataSource {
     List<DataSource> getAllTargetDataSource();
 
     /**
-     * 决定真实的数据源
+     * 通过Sql决策真实的数据源
      * @return
      */
     DataSource determineRealDataSource(String sql);

@@ -31,6 +31,9 @@ public abstract class AbstractMasterSlaveStatement extends ProxyWrapper implemen
     private int fetchSize;
 
 
+
+
+
     @Override
     public void close() throws SQLException {
         closed = true;
