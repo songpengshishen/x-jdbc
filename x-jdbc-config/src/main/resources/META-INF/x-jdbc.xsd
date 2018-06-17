@@ -6,7 +6,7 @@
             elementFormDefault="qualified" attributeFormDefault="unqualified">
     <xsd:import namespace="http://www.springframework.org/schema/beans"/>
 
-    <xsd:element name="rwds" id="rwds">
+    <xsd:element name="masterSlave" id="masterSlave">
         <xsd:annotation>
             <xsd:documentation><![CDATA[ 读写分离数据源标签 集群数据源ID,路由算法默认随机 ]]></xsd:documentation>
         </xsd:annotation>
@@ -14,8 +14,9 @@
             <xsd:complexContent>
                 <xsd:extension base="beans:identifiedType">
                     <xsd:sequence>
-                        <xsd:element name="masterDataSource" type="dataSourceWrapper" minOccurs="1" maxOccurs="1"></xsd:element>
+                        <xsd:element name="masterDataSource" type="masterDataSourceConfig" minOccurs="1" maxOccurs="1"></xsd:element>
                         <xsd:element ref="slaveDataSources" minOccurs="1" maxOccurs="1"></xsd:element>
+                        <xsd:element name="strategy" type="masterDataSourceConfig" minOccurs="1" maxOccurs="1"></xsd:element>
                     </xsd:sequence>
                     <xsd:attribute name="route" type="route" use="optional" default="SIMPLE"/>
                 </xsd:extension>
@@ -25,32 +26,50 @@
 
 
 
+    <xsd:complexType name="masterDataSourceConfig">
+        <xsd:annotation>
+            <xsd:documentation>
+                <![CDATA[ master数据源配置]]>
+            </xsd:documentation>
+        </xsd:annotation>
+        <xsd:complexContent>
+            <xsd:extension base="beans:identifiedType">
+                <xsd:attribute name="roomArea" type="roomArea" use="required"/>
+                <xsd:attribute name="name" type="xsd:string" use="required"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+
     <xsd:element name="slaveDataSources">
         <xsd:annotation>
             <xsd:documentation><![CDATA[目标数据源]]></xsd:documentation>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:sequence>
-                <xsd:element name="dataSource" type="dataSourceWrapper" minOccurs="1" maxOccurs="unbounded"></xsd:element>
+                <xsd:element name="dataSource" type="slaveDataSourceConfig" minOccurs="1" maxOccurs="unbounded"></xsd:element>
             </xsd:sequence>
         </xsd:complexType>
     </xsd:element>
 
 
-    <xsd:complexType name="dataSourceWrapper">
+
+
+    <xsd:complexType name="slaveDataSourceConfig">
         <xsd:annotation>
             <xsd:documentation>
-                <![CDATA[ 数据源配置]]>
+                <![CDATA[ slave数据源配置]]>
             </xsd:documentation>
         </xsd:annotation>
         <xsd:complexContent>
             <xsd:extension base="beans:identifiedType">
-                <xsd:attribute name="deployRoom" type="deployRoom" use="required"/>
-                <xsd:attribute name="role" type="role" use="required"/>
+                <xsd:attribute name="roomArea" type="roomArea" use="required"/>
                 <xsd:attribute name="weight" type="weight" use="optional" default="0"/>
+                <xsd:attribute name="name" type="xsd:string" use="required"/>
             </xsd:extension>
         </xsd:complexContent>
     </xsd:complexType>
+
 
 
     <xsd:simpleType name="route" >
@@ -62,18 +81,10 @@
     </xsd:simpleType>
 
 
-    <xsd:simpleType name="deployRoom" >
+    <xsd:simpleType name="roomArea" >
         <xsd:restriction base="xsd:string">
             <xsd:enumeration value="LF"/>
             <xsd:enumeration value="MJQ"/>
-        </xsd:restriction>
-    </xsd:simpleType>
-
-
-    <xsd:simpleType name="role" >
-        <xsd:restriction base="xsd:string">
-            <xsd:enumeration value="MASTER"/>
-            <xsd:enumeration value="SLAVE"/>
         </xsd:restriction>
     </xsd:simpleType>
 
