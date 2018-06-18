@@ -1,18 +1,20 @@
-package com.jd.jdbc.enums;
+package com.wsp.xjdbc.common.enums;
 
-import com.jd.jdbc.utils.EnumUtils;
 
+import com.wsp.xjdbc.common.utils.EnumUtils;
 /**
  * 路由算法枚举
- * @author <a href=mailto:wangsongpeng@jd.com>王宋鹏</a>
- * @since 1.0.0.Alpha
+ * Date : 2018-06-18
+ * @author wsp
+ * @since 2.0
  */
 public enum RouteEnum {
 
-    SIMPLE("SIMPLE","简单的读写分离"),
     RANDOM("RANDOM","权重随机路由"),
+
     LOCALROOM("LOCALROOM","本地机房调用")
     ;
+
     private String key;
     private String desc;
 

@@ -5,10 +5,11 @@ import javax.sql.DataSource;
 /**
  * 抽象的数据源配置
  * Date : 2018-06-17
+ *
  * @author wsp
  * @since 2.0
  */
-public abstract class AbstractDataSourceConfig {
+public abstract class AbstractDataSourceConfig extends AbstractConfig {
 
     /**
      * DataSource 名称
@@ -62,17 +63,16 @@ public abstract class AbstractDataSourceConfig {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj == this){
+        if (obj == this) {
             return true;
         }
-        if(obj instanceof AbstractDataSourceConfig){
-           final AbstractDataSourceConfig dataSourceConfig = (AbstractDataSourceConfig)obj;
-           if(this.getName().equals(dataSourceConfig.getName()) &&
-                   this.getRoomArea().equals(dataSourceConfig.getRoomArea())){
-                   if(this.getTargetDataSource().equals(dataSourceConfig.getTargetDataSource())){
-                       return true;
-                   }
-           }
+        if (obj instanceof AbstractDataSourceConfig) {
+            final AbstractDataSourceConfig dataSourceConfig = (AbstractDataSourceConfig) obj;
+            if (!this.getId().equals(dataSourceConfig.getId())) return false;
+            if (!this.getName().equals(dataSourceConfig.getName())) return false;
+            if (!this.getRoomArea().equals(dataSourceConfig.getRoomArea())) return false;
+            if (!this.getTargetDataSource().equals(dataSourceConfig.getTargetDataSource())) return false;
+            return true;
         }
         return false;
     }
@@ -80,9 +80,10 @@ public abstract class AbstractDataSourceConfig {
     @Override
     public int hashCode() {
         int code = 0;
+        code = 31 * code + (null != id ? id.hashCode() : 0);
         code = 31 * code + (null != name ? name.hashCode() : 0);
         code = 31 * code + (null != roomArea ? roomArea.hashCode() : 0);
-        code = 31 * code + (null != targetDataSource ? targetDataSource.hashCode():0);
+        code = 31 * code + (null != targetDataSource ? targetDataSource.hashCode() : 0);
         return code;
     }
 
@@ -90,11 +91,12 @@ public abstract class AbstractDataSourceConfig {
     public String toString() {
         StringBuilder sb = new StringBuilder(this.getClass().getCanonicalName());
         sb.append(" : ")
-        .append(" { ")
-        .append(" name =  ").append(this.name).append(",")
-        .append(" targetDataSource =  ").append(this.targetDataSource).append(",")
-        .append(" roomArea =  ").append(this.roomArea).append(",")
-        .append(" }");
+                .append(" { ")
+                .append(" id = ").append(this.id).append(",")
+                .append(" name =  ").append(this.name).append(",")
+                .append(" targetDataSource =  ").append(this.targetDataSource).append(",")
+                .append(" roomArea =  ").append(this.roomArea).append(",")
+                .append(" }");
         return sb.toString();
     }
 

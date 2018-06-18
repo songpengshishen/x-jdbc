@@ -1,7 +1,6 @@
-package com.jd.jdbc.test;
+package com.wsp.xjdbc.config.test;
 
-import com.jd.jdbc.ann.DataSourceSwitch;
-import com.jd.jdbc.enums.ReadWriteDataSourceEnum;
+
 import org.springframework.orm.ibatis.SqlMapClientTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -15,12 +14,12 @@ public class orderDao {
     @Resource
     private SqlMapClientTemplate SqlMapClientTemplate;
 
-    @DataSourceSwitch(type = ReadWriteDataSourceEnum.WRITE)
+
     public void insert(){
         SqlMapClientTemplate.insert("order.insert",newOrder());
     }
 
-    @DataSourceSwitch(type = ReadWriteDataSourceEnum.READ)
+
     public void query(){
        List<Order> orderList =  SqlMapClientTemplate.queryForList("order.select");
        System.out.println(orderList);

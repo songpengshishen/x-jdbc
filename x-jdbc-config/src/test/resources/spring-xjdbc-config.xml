@@ -16,17 +16,16 @@
 
 
     <aop:aspectj-autoproxy proxy-target-class="true"/>
-    <context:component-scan base-package="com.jd.jdbc"></context:component-scan>
+    <context:component-scan base-package="com.wsp.xjdbc.config.test"></context:component-scan>
 
-    <xjdbc:rwds id="rwDataSource" route="RANDOM">
+    <xjdbc:masterSlave id="masterSlaveDataSource">
         <!-- 主库数据源 -->
-        <xjdbc:masterDataSource id="master" deployRoom="LF" role="MASTER" weight="0"/>
+        <xjdbc:masterDataSource id="master" name="master" targetDataSource="master" />
         <xjdbc:slaveDataSources>
-            <!-- 多个从库数据源 -->
-           <xjdbc:dataSource id="slave01" deployRoom="MJQ"  role="SLAVE" weight="3"/>
-           <xjdbc:dataSource id="slave02" deployRoom="MJQ"  role="SLAVE" weight="6"/>
+            <xjdbc:slaveDataSource id="slave01" name="slave01" targetDataSource="slave01" enable="true" />
+            <xjdbc:slaveDataSource id="slave02" name="slave02" targetDataSource="slave02" />
         </xjdbc:slaveDataSources>
-    </xjdbc:rwds>
+    </xjdbc:masterSlave>
 
     <!-- 自己的master数据源 -->
     <bean id="master" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
@@ -83,7 +82,7 @@
                 <value>classpath:sqlmap-config.xml</value>
             </list>
         </property>
-        <property name="dataSource" ref="rwDataSource" />
+        <property name="dataSource" ref="masterSlaveDataSource" />
     </bean>
 
     <bean id="sqlMapClientTemplate" class="org.springframework.orm.ibatis.SqlMapClientTemplate">

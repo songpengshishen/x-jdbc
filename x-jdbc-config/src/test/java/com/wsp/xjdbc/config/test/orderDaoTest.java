@@ -1,4 +1,4 @@
-package com.jd.jdbc.test;
+package com.wsp.xjdbc.config.test;
 
 import javax.annotation.Resource;
 

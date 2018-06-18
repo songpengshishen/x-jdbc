@@ -1,5 +1,9 @@
 package com.wsp.xjdbc.config;
 
+import com.wsp.xjdbc.config.api.MasterDataSourceConfig;
+import com.wsp.xjdbc.config.api.MasterSlaveStrategyConfig;
+import com.wsp.xjdbc.config.api.SlaveDataSourceConfig;
+
 import javax.sql.DataSource;
 import java.util.Set;
 

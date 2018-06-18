@@ -1,12 +1,14 @@
 package com.wsp.xjdbc.config.api;
 
+import com.wsp.xjdbc.common.enums.RouteEnum;
+
 /**
  * master\slave的数据源策略配置
  * Date : 2018-06-17
  * @author wsp
  * @since 2.0
  */
-public class MasterSlaveStrategyConfig {
+public class MasterSlaveStrategyConfig extends AbstractConfig{
 
 
     public MasterSlaveStrategyConfig() {
@@ -19,7 +21,7 @@ public class MasterSlaveStrategyConfig {
     /**
      * slave库路由策略算法
      */
-    private String route;
+    private String route = RouteEnum.RANDOM.name();
 
     public String getRoute() {
         return route;
