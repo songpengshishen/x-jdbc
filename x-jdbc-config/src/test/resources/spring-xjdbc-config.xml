@@ -18,14 +18,18 @@
     <aop:aspectj-autoproxy proxy-target-class="true"/>
     <context:component-scan base-package="com.wsp.xjdbc.config.test"></context:component-scan>
 
+
+
     <xjdbc:masterSlave id="masterSlaveDataSource">
         <!-- 主库数据源 -->
-        <xjdbc:masterDataSource id="master" name="master" targetDataSource="master" />
+        <xjdbc:masterDataSource name="master" targetDataSourceRef="master" />
         <xjdbc:slaveDataSources>
-            <xjdbc:slaveDataSource id="slave01" name="slave01" targetDataSource="slave01" enable="true" />
-            <xjdbc:slaveDataSource id="slave02" name="slave02" targetDataSource="slave02" />
+            <xjdbc:slaveDataSource  name="slave01" targetDataSourceRef="slave01"  />
+            <xjdbc:slaveDataSource  name="slave02" targetDataSourceRef="slave02" />
         </xjdbc:slaveDataSources>
+        <xjdbc:strategy ></xjdbc:strategy>
     </xjdbc:masterSlave>
+
 
     <!-- 自己的master数据源 -->
     <bean id="master" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
@@ -41,6 +45,7 @@
         <property name="timeBetweenEvictionRunsMillis" value="60000" />
         <property name="minEvictableIdleTimeMillis" value="180000" />
     </bean>
+
 
 
     <!-- 自己slave01数据源 -->

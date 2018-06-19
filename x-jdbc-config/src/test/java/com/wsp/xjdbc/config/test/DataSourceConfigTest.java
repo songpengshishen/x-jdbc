@@ -3,8 +3,10 @@ package com.wsp.xjdbc.config.test;
 import com.wsp.xjdbc.config.MasterSlaveDataSourceFactory;
 import com.wsp.xjdbc.config.StandardMasterSlaveDataSourceFactory;
 import com.wsp.xjdbc.config.api.MasterDataSourceConfig;
+import com.wsp.xjdbc.config.api.MasterSlaveStrategyConfig;
 import com.wsp.xjdbc.config.api.SlaveDataSourceConfig;
 import org.apache.commons.dbcp.BasicDataSource;
+import org.junit.Assert;
 import org.junit.Test;
 
 import javax.sql.DataSource;
@@ -18,29 +20,85 @@ import java.util.Set;
 public class DataSourceConfigTest {
 
     @Test
-    public void testSimpleConfig(){
+    public void testCreateDataSource(){
         DataSource master = createMasterDbcpDataSource();
         DataSource slave01 = createslave0DbcpDataSource();
         DataSource slave02 = createslave1DbcpDataSource();
         Set<SlaveDataSourceConfig> slaves = new HashSet<SlaveDataSourceConfig>();
 
-        MasterDataSourceConfig masterDataSourceConfig = new MasterDataSourceConfig();
-        masterDataSourceConfig.setName("master");
-        masterDataSourceConfig.setTargetDataSource(master);
+        MasterDataSourceConfig m1 = new MasterDataSourceConfig();
+        m1.setName("master");
+        m1.setTargetDataSource(master);
 
-        SlaveDataSourceConfig slaveDataSourceConfig0 = new SlaveDataSourceConfig();
-        slaveDataSourceConfig0.setName("slave01");
-        slaveDataSourceConfig0.setTargetDataSource(slave01);
-        slaveDataSourceConfig0.setEnable(true);
-        slaves.add(slaveDataSourceConfig0);
+        SlaveDataSourceConfig s1 = new SlaveDataSourceConfig();
+        s1.setName("slave01");
+        s1.setTargetDataSource(slave01);
+        slaves.add(s1);
 
-        SlaveDataSourceConfig slaveDataSourceConfig1 = new SlaveDataSourceConfig();
-        slaveDataSourceConfig1.setName("slave02");
-        slaveDataSourceConfig1.setTargetDataSource(slave02);
-        slaves.add(slaveDataSourceConfig1);
+        SlaveDataSourceConfig s2 = new SlaveDataSourceConfig();
+        s2.setName("slave02");
+        s2.setTargetDataSource(slave02);
+        slaves.add(s2);
+
+
+        MasterSlaveStrategyConfig strategyConfig = new MasterSlaveStrategyConfig();
+        strategyConfig.setRoute("aaa");
 
         MasterSlaveDataSourceFactory dataSourceFactory = new StandardMasterSlaveDataSourceFactory();
-        dataSourceFactory.getDataSource(masterDataSourceConfig,slaves,null);
+        Assert.assertNotNull(dataSourceFactory.getDataSource(m1,slaves,strategyConfig));
+    }
+
+
+
+
+    @Test
+    public void testMasterDataSourceConfig(){
+        DataSource master = createMasterDbcpDataSource();
+
+        MasterDataSourceConfig m1 = new MasterDataSourceConfig();
+
+        m1.setName("master1");
+        m1.setTargetDataSource(master);
+        m1.setRoomArea("LF1");
+
+
+        MasterDataSourceConfig m2 = new MasterDataSourceConfig();
+
+        m2.setName("master1");
+        m2.setTargetDataSource(master);
+        m2.setRoomArea("LF1");
+
+
+        Assert.assertEquals("Object Not Equals",m1,m2);
+        Assert.assertEquals("HashCode Not Equals",m1.hashCode(),m2.hashCode());
+    }
+
+
+
+    @Test
+    public void testSlaveDataSourceConfig(){
+        DataSource slave0 = createslave0DbcpDataSource();
+
+        SlaveDataSourceConfig s1 = new SlaveDataSourceConfig();
+
+        s1.setName("s1");
+        s1.setTargetDataSource(slave0);
+        s1.setRoomArea("LF1");
+        s1.setWeight(2);
+        s1.setEnable(false);
+
+
+        SlaveDataSourceConfig s2 = new SlaveDataSourceConfig();
+
+        s2.setName("s1");
+        s2.setTargetDataSource(slave0);
+        s2.setRoomArea("LF1");
+        s2.setWeight(2);
+        s2.setEnable(false);
+
+
+        Assert.assertEquals("Object Not Equals",s1,s2);
+        Assert.assertEquals("HashCode Not Equals",s1.hashCode(),s2.hashCode());
     }
 
 

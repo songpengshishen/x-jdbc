@@ -22,7 +22,7 @@ public interface MasterSlaveDataSourceFactory {
      * @param strategyConfig 数据源策略配置
      * @return
      */
-    DataSource getDataSource(MasterDataSourceConfig master, Set<SlaveDataSourceConfig> slaves,
+    DataSource getDataSource(MasterDataSourceConfig master, Set<? extends SlaveDataSourceConfig> slaves,
                              MasterSlaveStrategyConfig strategyConfig);
 
 }

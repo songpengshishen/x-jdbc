@@ -18,7 +18,7 @@
                         <xsd:element ref="slaveDataSources" minOccurs="1" maxOccurs="1"></xsd:element>
                         <xsd:element name="strategy" type="strategyConfig" minOccurs="0" maxOccurs="1"></xsd:element>
                     </xsd:sequence>
-                    <xsd:attribute name="dataSourceFactory" type="xsd:string" use="optional" />
+                    <xsd:attribute name="dataSourceFactoryRef" type="xsd:string" use="optional" />
                 </xsd:extension>
             </xsd:complexContent>
         </xsd:complexType>
@@ -32,13 +32,9 @@
                 <![CDATA[ master数据源配置]]>
             </xsd:documentation>
         </xsd:annotation>
-        <xsd:complexContent>
-            <xsd:extension base="beans:identifiedType">
-                <xsd:attribute name="roomArea" type="roomArea" use="optional"/>
-                <xsd:attribute name="name" type="xsd:string" use="required"/>
-                <xsd:attribute name="targetDataSource" type="xsd:string" use="required"/>
-            </xsd:extension>
-        </xsd:complexContent>
+        <xsd:attribute name="roomArea" type="roomArea" use="optional"/>
+        <xsd:attribute name="name" type="xsd:string" use="required"/>
+        <xsd:attribute name="targetDataSourceRef" type="xsd:string" use="required"/>
     </xsd:complexType>
 
 
@@ -62,15 +58,11 @@
                 <![CDATA[ slave数据源配置]]>
             </xsd:documentation>
         </xsd:annotation>
-        <xsd:complexContent>
-            <xsd:extension base="beans:identifiedType">
-                <xsd:attribute name="roomArea" type="roomArea" use="optional"/>
-                <xsd:attribute name="weight" type="weight" use="optional" default="2"/>
-                <xsd:attribute name="name" type="xsd:string" use="required"/>
-                <xsd:attribute name="enable" type="xsd:boolean" default="false" use="optional"/>
-                <xsd:attribute name="targetDataSource" type="xsd:string" use="required"></xsd:attribute>
-            </xsd:extension>
-        </xsd:complexContent>
+        <xsd:attribute name="roomArea" type="roomArea" use="optional"/>
+        <xsd:attribute name="weight" type="weight" use="optional" default="2"/>
+        <xsd:attribute name="name" type="xsd:string" use="required"/>
+        <xsd:attribute name="enable" type="xsd:boolean" default="false" use="optional"/>
+        <xsd:attribute name="targetDataSourceRef" type="xsd:string" use="required"></xsd:attribute>
     </xsd:complexType>
 
 
@@ -81,11 +73,7 @@
                 <![CDATA[ 数据源策略配置]]>
             </xsd:documentation>
         </xsd:annotation>
-        <xsd:complexContent>
-            <xsd:extension base="beans:identifiedType">
-                <xsd:attribute name="route" type="xsd:string"   use="optional"/>
-            </xsd:extension>
-        </xsd:complexContent>
+        <xsd:attribute name="route" type="route" default="RANDOM"  use="optional"/>
     </xsd:complexType>
 
 
@@ -95,6 +83,13 @@
         <xsd:restriction base="xsd:string">
             <xsd:enumeration value="LF"/>
             <xsd:enumeration value="MJQ"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+
+    <xsd:simpleType name="route" >
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="RANDOM"/>
         </xsd:restriction>
     </xsd:simpleType>
 

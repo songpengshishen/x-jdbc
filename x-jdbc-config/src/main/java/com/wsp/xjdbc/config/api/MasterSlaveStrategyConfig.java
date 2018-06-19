@@ -1,5 +1,6 @@
 package com.wsp.xjdbc.config.api;
 
+import com.wsp.xjdbc.common.ann.DataSourceField;
 import com.wsp.xjdbc.common.enums.RouteEnum;
 
 /**
@@ -21,6 +22,7 @@ public class MasterSlaveStrategyConfig extends AbstractConfig{
     /**
      * slave库路由策略算法
      */
+    @DataSourceField(required = false)
     private String route = RouteEnum.RANDOM.name();
 
     public String getRoute() {

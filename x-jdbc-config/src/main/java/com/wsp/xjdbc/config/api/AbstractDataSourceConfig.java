@@ -1,5 +1,7 @@
 package com.wsp.xjdbc.config.api;
 
+import com.wsp.xjdbc.common.ann.DataSourceField;
+
 import javax.sql.DataSource;
 
 /**
@@ -13,17 +15,23 @@ public abstract class AbstractDataSourceConfig extends AbstractConfig {
 
     /**
      * DataSource 名称
+     * 必填项
      */
+    @DataSourceField(required = true)
     protected String name;
 
     /**
      * 数据库所在机房区域
+     * 选填项
      */
+    @DataSourceField(required = false)
     protected String roomArea;
 
     /**
      * 实际的数据源,实现了JDBC规范的DataSource都可以
+     * 必填项
      */
+    @DataSourceField(required = true)
     protected DataSource targetDataSource;
 
     protected AbstractDataSourceConfig() {
@@ -68,10 +76,9 @@ public abstract class AbstractDataSourceConfig extends AbstractConfig {
         }
         if (obj instanceof AbstractDataSourceConfig) {
             final AbstractDataSourceConfig dataSourceConfig = (AbstractDataSourceConfig) obj;
-            if (!this.getId().equals(dataSourceConfig.getId())) return false;
-            if (!this.getName().equals(dataSourceConfig.getName())) return false;
-            if (!this.getRoomArea().equals(dataSourceConfig.getRoomArea())) return false;
-            if (!this.getTargetDataSource().equals(dataSourceConfig.getTargetDataSource())) return false;
+            if (null!=this.getName()?!this.getName().equals(dataSourceConfig.getName()):null!=dataSourceConfig.getName()) return false;
+            if (null!=this.getRoomArea()?!this.getRoomArea().equals(dataSourceConfig.getRoomArea()):null!=dataSourceConfig.getRoomArea()) return false;
+            if (this.getTargetDataSource()!=dataSourceConfig.getTargetDataSource()) return false;
             return true;
         }
         return false;
@@ -80,7 +87,6 @@ public abstract class AbstractDataSourceConfig extends AbstractConfig {
     @Override
     public int hashCode() {
         int code = 0;
-        code = 31 * code + (null != id ? id.hashCode() : 0);
         code = 31 * code + (null != name ? name.hashCode() : 0);
         code = 31 * code + (null != roomArea ? roomArea.hashCode() : 0);
         code = 31 * code + (null != targetDataSource ? targetDataSource.hashCode() : 0);
@@ -92,7 +98,6 @@ public abstract class AbstractDataSourceConfig extends AbstractConfig {
         StringBuilder sb = new StringBuilder(this.getClass().getCanonicalName());
         sb.append(" : ")
                 .append(" { ")
-                .append(" id = ").append(this.id).append(",")
                 .append(" name =  ").append(this.name).append(",")
                 .append(" targetDataSource =  ").append(this.targetDataSource).append(",")
                 .append(" roomArea =  ").append(this.roomArea).append(",")

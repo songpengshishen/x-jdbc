@@ -1,5 +1,6 @@
 package com.wsp.xjdbc.config.api;
 
+import com.wsp.xjdbc.common.ann.DataSourceField;
 import com.wsp.xjdbc.common.constant.SystemContants;
 
 import javax.sql.DataSource;
@@ -25,12 +26,14 @@ public class SlaveDataSourceConfig extends AbstractDataSourceConfig {
     /**
      * 权重值
      */
-    private int weight = SystemContants.MIN_WEIGHT;
+    @DataSourceField(required = false)
+    protected int weight = SystemContants.MIN_WEIGHT;
 
     /**
      * 是否启用该从库
      */
-    private boolean enable;
+    @DataSourceField(required = false)
+    protected boolean enable;
 
 
     public boolean isEnable() {
@@ -56,12 +59,11 @@ public class SlaveDataSourceConfig extends AbstractDataSourceConfig {
         }
         if (obj instanceof SlaveDataSourceConfig) {
             final SlaveDataSourceConfig dataSourceConfig = (SlaveDataSourceConfig) obj;
-            if (!this.getId().equals(dataSourceConfig.getId())) return false;
-            if (!this.getName().equals(dataSourceConfig.getName())) return false;
-            if (!this.getRoomArea().equals(dataSourceConfig.getRoomArea())) return false;
+            if (null!=this.getName()?!this.getName().equals(dataSourceConfig.getName()):null!=dataSourceConfig.getName()) return false;
+            if (null!=this.getRoomArea()?!this.getRoomArea().equals(dataSourceConfig.getRoomArea()):null!=dataSourceConfig.getRoomArea()) return false;
             if (this.getWeight() != dataSourceConfig.getWeight()) return false;
             if (this.isEnable() != dataSourceConfig.isEnable()) return false;
-            if (!this.getTargetDataSource().equals(dataSourceConfig.getTargetDataSource())) return false;
+            if (this.getTargetDataSource()!=dataSourceConfig.getTargetDataSource()) return false;
             return true;
         }
         return false;
@@ -70,7 +72,6 @@ public class SlaveDataSourceConfig extends AbstractDataSourceConfig {
     @Override
     public int hashCode() {
         int code = 0;
-        code = 31 * code + (null != id ? id.hashCode() : 0);
         code = 31 * code + (null != name ? name.hashCode() : 0);
         code = 31 * code + (null != roomArea ? roomArea.hashCode() : 0);
         code = 31 * code + weight;

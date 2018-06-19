@@ -20,7 +20,7 @@ public class StandardMasterSlaveDataSourceFactory extends AbstractMasterSlaveSou
     private static final Logger logger = LoggerFactory.getLogger(StandardMasterSlaveDataSourceFactory.class);
 
     @Override
-    protected DataSource createDataSource(MasterDataSourceConfig master, Set<SlaveDataSourceConfig> slaves,
+    protected DataSource createDataSource(MasterDataSourceConfig master, Set<? extends SlaveDataSourceConfig> slaves,
                                           MasterSlaveStrategyConfig strategyConfig)throws IllegalStateException {
 
         // TODO: 2018/6/17 创建数据源

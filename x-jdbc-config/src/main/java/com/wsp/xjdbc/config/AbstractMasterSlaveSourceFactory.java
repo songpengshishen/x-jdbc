@@ -3,6 +3,7 @@ package com.wsp.xjdbc.config;
 import com.wsp.xjdbc.common.enums.RoomAreaEnum;
 import com.wsp.xjdbc.common.enums.RouteEnum;
 import com.wsp.xjdbc.common.exception.IllegalConfigException;
+import com.wsp.xjdbc.common.utils.EnumUtils;
 import com.wsp.xjdbc.config.api.AbstractDataSourceConfig;
 import com.wsp.xjdbc.config.api.MasterDataSourceConfig;
 import com.wsp.xjdbc.config.api.MasterSlaveStrategyConfig;
@@ -27,7 +28,7 @@ public abstract class AbstractMasterSlaveSourceFactory implements MasterSlaveDat
     private static final Logger logger = LoggerFactory.getLogger(AbstractMasterSlaveSourceFactory.class);
 
     /**
-     * 缓存的当前系统的所有DataSource,key是通过配置生成的,保证配置一样只有一个Datasource
+     * 缓存的当前系统的所有DataSource,key是通过三个配置类的hashcode生成的,保证配置一样只有一个Datasource
      */
     protected static ConcurrentHashMap<String, DataSource> CACHE_DATASOURCE_MAP = new ConcurrentHashMap<String, DataSource>(1);
 
@@ -40,7 +41,7 @@ public abstract class AbstractMasterSlaveSourceFactory implements MasterSlaveDat
      * @return
      */
     @Override
-    public DataSource getDataSource(MasterDataSourceConfig master, Set<SlaveDataSourceConfig> slaves,
+    public DataSource getDataSource(MasterDataSourceConfig master, Set<? extends SlaveDataSourceConfig> slaves,
                                     MasterSlaveStrategyConfig strategyConfig) {
         if (null == master) {
             throw new NullPointerException("MasterDataSourceConfig Can Not Empty!");
@@ -69,7 +70,7 @@ public abstract class AbstractMasterSlaveSourceFactory implements MasterSlaveDat
      *
      * @return
      */
-    private String generateDataSourceMapKey(MasterDataSourceConfig master, Set<SlaveDataSourceConfig> slaves, MasterSlaveStrategyConfig strategyConfig) {
+    private String generateDataSourceMapKey(MasterDataSourceConfig master, Set<? extends SlaveDataSourceConfig> slaves, MasterSlaveStrategyConfig strategyConfig) {
         int keyVal = master.hashCode();
         if(null != strategyConfig){
             keyVal  += strategyConfig.hashCode();
@@ -81,7 +82,7 @@ public abstract class AbstractMasterSlaveSourceFactory implements MasterSlaveDat
     }
 
 
-    private void checkDataSourceAndStrategyConfigs(MasterDataSourceConfig master, Set<SlaveDataSourceConfig> slaves, MasterSlaveStrategyConfig strategyConfig) {
+    private void checkDataSourceAndStrategyConfigs(MasterDataSourceConfig master, Set<? extends SlaveDataSourceConfig> slaves, MasterSlaveStrategyConfig strategyConfig) {
         Set<String> distinctSoureNameSet = new HashSet<String>();
         //验证master数据源配置
         checkDataSourceConfig(master);
@@ -90,7 +91,7 @@ public abstract class AbstractMasterSlaveSourceFactory implements MasterSlaveDat
         RouteEnum routeEnum = null;
         //检查策略配置中路由选项
         if (null != strategyConfig) {
-            routeEnum = Enum.valueOf(RouteEnum.class, strategyConfig.getRoute());
+            routeEnum = EnumUtils.getByCache(RouteEnum.class, strategyConfig.getRoute());
             if (null == routeEnum) {
                 throw new IllegalConfigException("StrategyConfig Route  This configuration [" + strategyConfig.getRoute() + "]can not be found");
             }
@@ -114,11 +115,11 @@ public abstract class AbstractMasterSlaveSourceFactory implements MasterSlaveDat
         }
 
         if (null != routeEnum && enableTrueNumber > 0) {
-            throw new IllegalConfigException("StrategyConfig Route  It is configuration [" + strategyConfig.getRoute() + "]slaveDataSourceConfig Can not be configured enable!");
+            throw new IllegalConfigException("routing policy has been configured [" + strategyConfig.getRoute() + "]enable can not be configured!");
         }
 
         if (null == routeEnum && enableTrueNumber == 0) {
-            throw new IllegalConfigException("StrategyConfig Route  It is No configuration [" + strategyConfig.getRoute() + "]slaveDataSourceConfig enable is Required!");
+            throw new IllegalConfigException("No configuration routing policy,You need to Open a slave please set enable");
         }
 
     }
@@ -147,7 +148,7 @@ public abstract class AbstractMasterSlaveSourceFactory implements MasterSlaveDat
      *
      * @return
      */
-    protected abstract DataSource createDataSource(MasterDataSourceConfig master, Set<SlaveDataSourceConfig> slaves,
+    protected abstract DataSource createDataSource(MasterDataSourceConfig master, Set<? extends SlaveDataSourceConfig> slaves,
                                                    MasterSlaveStrategyConfig strategyConfig) throws IllegalStateException;
 
 
