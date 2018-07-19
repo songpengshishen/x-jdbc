@@ -2,7 +2,7 @@ package com.wsp.xjdbc.config;
 
 import com.wsp.xjdbc.common.enums.RoomAreaEnum;
 import com.wsp.xjdbc.common.enums.RouteEnum;
-import com.wsp.xjdbc.common.exception.IllegalConfigException;
+import com.wsp.xjdbc.common.exception.XJdbcConfigurationException;
 import com.wsp.xjdbc.common.utils.EnumUtils;
 import com.wsp.xjdbc.config.api.AbstractDataSourceConfig;
 import com.wsp.xjdbc.config.api.MasterDataSourceConfig;
@@ -10,7 +10,6 @@ import com.wsp.xjdbc.config.api.MasterSlaveStrategyConfig;
 import com.wsp.xjdbc.config.api.SlaveDataSourceConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import javax.sql.DataSource;
 import java.util.HashSet;
 import java.util.Set;
@@ -93,7 +92,7 @@ public abstract class AbstractMasterSlaveSourceFactory implements MasterSlaveDat
         if (null != strategyConfig) {
             routeEnum = EnumUtils.getByCache(RouteEnum.class, strategyConfig.getRoute());
             if (null == routeEnum) {
-                throw new IllegalConfigException("StrategyConfig Route  This configuration [" + strategyConfig.getRoute() + "]can not be found");
+                throw new XJdbcConfigurationException("StrategyConfig Route  This configuration [" + strategyConfig.getRoute() + "]can not be found");
             }
         }
         //迭代检查从数据源
@@ -107,19 +106,19 @@ public abstract class AbstractMasterSlaveSourceFactory implements MasterSlaveDat
         }
 
         if (distinctSoureNameSet.size() != (slaves.size() + 1)) {
-            throw new IllegalConfigException("configuration name Attr Cannot Cannot Duplicate MasterDataSourceConfig : " + master +
+            throw new XJdbcConfigurationException("configuration name Attr Cannot Cannot Duplicate MasterDataSourceConfig : " + master +
                     " slaveDataSourceConfig : " + slaves);
         }
         if (enableTrueNumber > 1) {
-            throw new IllegalConfigException("slaveDataSourceConfig enable Can only be configured with one");
+            throw new XJdbcConfigurationException("slaveDataSourceConfig enable Can only be configured with one");
         }
 
         if (null != routeEnum && enableTrueNumber > 0) {
-            throw new IllegalConfigException("routing policy has been configured [" + strategyConfig.getRoute() + "]enable can not be configured!");
+            throw new XJdbcConfigurationException("routing policy has been configured [" + strategyConfig.getRoute() + "]enable can not be configured!");
         }
 
         if (null == routeEnum && enableTrueNumber == 0) {
-            throw new IllegalConfigException("No configuration routing policy,You need to Open a slave please set enable");
+            throw new XJdbcConfigurationException("No configuration routing policy,You need to Open a slave please set enable");
         }
 
     }
@@ -127,10 +126,10 @@ public abstract class AbstractMasterSlaveSourceFactory implements MasterSlaveDat
     private void checkDataSourceConfig(AbstractDataSourceConfig dataSourceConfig) {
 
         if (null == dataSourceConfig.getTargetDataSource()) {
-            throw new IllegalConfigException("targetDataSource is Empty! [ " + dataSourceConfig + "]");
+            throw new XJdbcConfigurationException("targetDataSource is Empty! [ " + dataSourceConfig + "]");
         }
         if (null == dataSourceConfig.getName() || dataSourceConfig.getName().isEmpty()) {
-            throw new IllegalConfigException("name is Empty! [ " + dataSourceConfig + "]");
+            throw new XJdbcConfigurationException("name is Empty! [ " + dataSourceConfig + "]");
         }
         if (null == dataSourceConfig.getRoomArea() || dataSourceConfig.getRoomArea().isEmpty()) {
             if (logger.isWarnEnabled()) {
@@ -138,7 +137,7 @@ public abstract class AbstractMasterSlaveSourceFactory implements MasterSlaveDat
             }
         } else {
             if (RoomAreaEnum.valueOf(dataSourceConfig.getRoomArea()) == null) {
-                throw new IllegalConfigException("dataSourceConfig roomArea This configuration [" + dataSourceConfig.getRoomArea() + "]can not be found");
+                throw new XJdbcConfigurationException("dataSourceConfig roomArea This configuration [" + dataSourceConfig.getRoomArea() + "]can not be found");
             }
         }
     }
