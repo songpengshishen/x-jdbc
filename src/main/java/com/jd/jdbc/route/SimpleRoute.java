@@ -1,6 +1,5 @@
 package com.jd.jdbc.route;
-import com.jd.jdbc.ds.DataSourceWrapper;
-import javax.sql.DataSource;
+import com.jd.jdbc.core.DataSourceDefinition;
 import java.util.List;
 
 /**
@@ -8,15 +7,15 @@ import java.util.List;
  * @author <a href=mailto:wangsongpeng@jd.com>王宋鹏</a>
  * @since 1.0.0.Alpha
  */
-public class SimpleRoute extends AbstractRoute implements  Route{
+public class SimpleRoute extends AbstractRoute implements Route{
 
     /**
      * 根据路由算法获取真正的数据源
-     * @param dataSourceWrappers 可用的数据源集合
+     * @param dataSourceDefinitions 可用的数据源集合
      * @return 数据源
      */
     @Override
-    public String doRoute(List<DataSourceWrapper> dataSourceWrappers) {
-       return dataSourceWrappers.get(0).getId();
+    public DataSourceDefinition doRoute(List<DataSourceDefinition> dataSourceDefinitions) {
+       return dataSourceDefinitions.get(0);
     }
 }

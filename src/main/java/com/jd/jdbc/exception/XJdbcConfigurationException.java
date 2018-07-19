@@ -7,21 +7,16 @@ package com.jd.jdbc.exception;
  */
 public class XJdbcConfigurationException extends XJdbcBaseException{
 
-    /**
-     * spring beanID
-     */
-    private String beanId;
-
-    public XJdbcConfigurationException(){super();}
-
-    public XJdbcConfigurationException(String beanId){
-        super("Error Configuration bean with beanId \'" + beanId + "\': ");
-        this.beanId = beanId;
+    public XJdbcConfigurationException(){
+        super();
     }
 
-    public XJdbcConfigurationException(String beanId,String msg){
-        super(msg + " beanId: " + beanId);
-        this.beanId = beanId;
+    public XJdbcConfigurationException(String message){
+        super(message);
     }
+
+
+
+
 
 }

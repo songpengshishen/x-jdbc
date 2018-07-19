@@ -1,12 +1,8 @@
 package com.jd.jdbc.route;
-
-import com.jd.jdbc.aop.DataSourceSwitchAspect;
-import com.jd.jdbc.ds.DataSourceWrapper;
-import com.jd.jdbc.exception.XJdbcNoAliveDataSourceException;
+import com.jd.jdbc.core.DataSourceDefinition;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.util.List;
 
 /**
@@ -21,36 +17,34 @@ public abstract class AbstractRoute implements Route {
 
     /**
      * 路由算法,从库集合为空时返回null
-     * @param dataSourceWrappers 可用的数据源集合
+     * @param dataSourceDefinitions 可用的数据源集合
      * @return 数据源
      */
-    public String route(List<DataSourceWrapper> dataSourceWrappers) {
-        if (CollectionUtils.isEmpty(dataSourceWrappers)) {
+    public DataSourceDefinition route(List<DataSourceDefinition> dataSourceDefinitions) {
+        if (CollectionUtils.isEmpty(dataSourceDefinitions)) {
             return null;
-        }else if (dataSourceWrappers.size() == 1) {
-            return dataSourceWrappers.get(0).getId();
+        }else if (dataSourceDefinitions.size() == 1) {
+            return dataSourceDefinitions.get(0);
         } else {
-            return doRoute(dataSourceWrappers);
+            return doRoute(dataSourceDefinitions);
         }
     }
 
     /**
      * 根据路由算法获取真正的数据源
-     *
      * @param dataSourceWrappers 可用的数据源集合
      * @return 数据源beanId
      */
-    public abstract String doRoute(List<DataSourceWrapper> dataSourceWrappers);
+    public abstract DataSourceDefinition doRoute(List<DataSourceDefinition> dataSourceWrappers);
 
 
     /**
      * 获取数据源的权重
-     *
-     * @param dataSourceWrapper 数据源包装类
+     * @param dataSourceDefinition 数据源定义
      * @return
      */
-    protected int getWeight(DataSourceWrapper dataSourceWrapper) {
-        return dataSourceWrapper.getWeight() < 0 ? 0 : dataSourceWrapper.getWeight();
+    protected int getWeight(DataSourceDefinition dataSourceDefinition) {
+        return dataSourceDefinition.getWeight() < 0 ? 0 : dataSourceDefinition.getWeight();
     }
 
 

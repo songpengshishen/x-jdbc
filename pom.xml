@@ -2,11 +2,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.jd.wsp</groupId>
-    <artifactId>x-jdbc</artifactId>
-    <version>1.1.0.Alpha-SNAPSHOT</version>
+    <groupId>com.wsp</groupId>
+    <artifactId>x-jdbc-parent</artifactId>
+    <version>2.0.0.Alpha-SNAPSHOT</version>
+    <modules>
+        <module>x-jdbc-config</module>
+        <module>x-jdbc-core</module>
+        <module>x-jdbc-strategy</module>
+        <module>x-jdbc-common</module>
+    </modules>
     <name>${project.artifactId}</name>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
     <properties>
         <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
         <maven.compiler.encoding>utf-8</maven.compiler.encoding>
@@ -20,15 +26,15 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.jd.ump</groupId>
-            <artifactId>profiler</artifactId>
-            <version>${profiler.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-beans</artifactId>
             <version>${spring.version}</version>
             <scope>${spring.scope}</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.6</version>
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>
@@ -117,9 +123,16 @@
             <groupId>commons-dbcp</groupId>
             <artifactId>commons-dbcp</artifactId>
             <version>1.4</version>
-            <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>18.0</version>
+         </dependency>
     </dependencies>
+
+
+
     <build>
         <sourceDirectory>src/main/java</sourceDirectory>
         <testSourceDirectory>src/test/java</testSourceDirectory>

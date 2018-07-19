@@ -13,13 +13,13 @@ public class RouteFactory {
      * @param routeName 路由算法名称
      * @return 实现了路由算法的子类
      */
-    public static Route getInstance(String routeName, String beanId) {
+    public static Route getInstance(String routeName) {
         Route route =  null;
         switch (RouteEnum.valueOfByCode(routeName)){
             case SIMPLE:route = new SimpleRoute();break;
             case RANDOM:route = new RandomRoute();break;
             case LOCALROOM:route = new LocalRoomRoute();break;
-            default: throw new XJdbcConfigurationException("route Configuration Error!routeName : " + routeName,beanId);
+            default: throw new XJdbcConfigurationException("route Configuration Error!routeName : " + routeName);
         }
         return route;
     }
