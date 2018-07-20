@@ -1,14 +1,20 @@
 package com.wsp.xjdbc.core.ds;
 
 import com.wsp.xjdbc.config.api.MasterDataSourceConfig;
+import com.wsp.xjdbc.config.api.MasterSlaveStrategyConfig;
 import com.wsp.xjdbc.config.api.SlaveDataSourceConfig;
 import com.wsp.xjdbc.core.MasterSlaveDataSource;
 import com.wsp.xjdbc.core.ProxyWrapper;
+import com.wsp.xjdbc.strategy.route.Route;
+import com.wsp.xjdbc.strategy.route.RouteFactory;
+
+import javax.sql.DataSource;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.util.List;
-import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Logger;
 
 
 /**
@@ -20,16 +26,28 @@ import java.util.Set;
 public abstract class AbstractMasterSlaveDataSource extends ProxyWrapper implements MasterSlaveDataSource {
 
 
-    private MasterDataSourceConfig masterDataSourceConfig;
+    protected MasterDataSourceConfig masterDataSourceConfig;
 
-    private Set<SlaveDataSourceConfig> slaveDataSourceConfigs;
+    protected List<SlaveDataSourceConfig> slaveDataSourceConfigs = new CopyOnWriteArrayList<SlaveDataSourceConfig>();
+
+    protected MasterSlaveStrategyConfig strategyConfig;
+
+    protected Route route = null;
+
+    private List<DataSource> slaveDataSources = new CopyOnWriteArrayList<DataSource>();
 
     private PrintWriter logWriter = new PrintWriter(System.out);
 
 
-    public AbstractMasterSlaveDataSource(MasterDataSourceConfig masterDataSourceConfig,Set<SlaveDataSourceConfig> slaveDataSourceConfigs){
+    protected AbstractMasterSlaveDataSource(MasterDataSourceConfig masterDataSourceConfig,
+                                            List<SlaveDataSourceConfig> slaveDataSourceConfigs,MasterSlaveStrategyConfig strategyConfig){
          this.masterDataSourceConfig = masterDataSourceConfig;
-         this.slaveDataSourceConfigs = slaveDataSourceConfigs;
+         this.slaveDataSourceConfigs.addAll(slaveDataSourceConfigs);
+         this.strategyConfig = strategyConfig;
+         for(SlaveDataSourceConfig dataSourceConfig : slaveDataSourceConfigs){
+             this.slaveDataSources.add(dataSourceConfig.getTargetDataSource());
+         }
+         route = RouteFactory.getInstance(strategyConfig.getRoute());
     }
 
     @Override
@@ -52,19 +70,26 @@ public abstract class AbstractMasterSlaveDataSource extends ProxyWrapper impleme
         throw new SQLFeatureNotSupportedException("unsupported getLoginTimeout() By StandardMasterSlaveDataSource");
     }
 
+    @Override
+    public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+        return Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+    }
+
+    @Override
+    public List<DataSource> getSlaveTargetDataSources() {
+        return slaveDataSources;
+    }
+
+    @Override
+    public DataSource getMasterDataSource() {
+        return masterDataSourceConfig.getTargetDataSource();
+    }
+
     public MasterDataSourceConfig getMasterDataSourceConfig() {
         return masterDataSourceConfig;
     }
 
-    public void setMasterDataSourceConfig(MasterDataSourceConfig masterDataSourceConfig) {
-        this.masterDataSourceConfig = masterDataSourceConfig;
-    }
-
-    public Set<SlaveDataSourceConfig> getSlaveDataSourceConfigs() {
+    public List<SlaveDataSourceConfig> getSlaveDataSourceConfigs() {
         return slaveDataSourceConfigs;
-    }
-
-    public void setSlaveDataSourceConfigs(Set<SlaveDataSourceConfig> slaveDataSourceConfigs) {
-        this.slaveDataSourceConfigs = slaveDataSourceConfigs;
     }
 }

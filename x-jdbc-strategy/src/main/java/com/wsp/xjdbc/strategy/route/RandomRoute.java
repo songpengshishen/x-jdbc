@@ -1,12 +1,14 @@
-package com.jd.jdbc.route;
-import com.jd.jdbc.core.DataSourceDefinition;
+package com.wsp.xjdbc.strategy.route;
+import com.wsp.xjdbc.config.api.SlaveDataSourceConfig;
+
+import javax.sql.DataSource;
 import java.util.List;
 import java.util.Random;
 
 /**
  * 数据源权重随机路由算法基类.
  * @author <a href=mailto:wangsongpeng@jd.com>王宋鹏</a>
- * @since 1.0.0.Alpha
+ * @since 2018/07/20
  */
 public class RandomRoute extends AbstractRoute implements Route{
 
@@ -18,20 +20,19 @@ public class RandomRoute extends AbstractRoute implements Route{
     /**
      * 根据路由算法获取真正的数据源
      * <tt>这里借用了JSF的权重随机路由算法.</tt>
-     * @param dataSourceDefinitions 可用的数据源集合
+     * @param slaveDataSourceConfigs 可用的数据源集合配置
      * @return 数据源
      */
     @Override
-    public DataSourceDefinition doRoute(List<DataSourceDefinition> dataSourceDefinitions) {
-        DataSourceDefinition dataSourceDefinition = null;//数据源包装类
-        final List<DataSourceDefinition> ds = dataSourceDefinitions;
-        int length = ds.size(); // 数据源总个数
+    public DataSource doRoute(List<SlaveDataSourceConfig> slaveDataSourceConfigs) {
+        DataSource dataSource = null;//数据源
+        int length = slaveDataSourceConfigs.size(); // 数据源总个数
         int totalWeight = 0; // 总权重
         boolean sameWeight = true; //权重是否都一样
         for (int i = 0; i < length; i++) {
-            int weight = getWeight(ds.get(i));
+            int weight = getWeight(slaveDataSourceConfigs.get(i));
             totalWeight += weight; // 累计总权重
-            if (sameWeight && i > 0 && weight != getWeight(ds.get(i - 1))) {
+            if (sameWeight && i > 0 && weight != getWeight(slaveDataSourceConfigs.get(i - 1))) {
                 sameWeight = false; // 计算所有权重是否一样
             }
         }
@@ -40,17 +41,17 @@ public class RandomRoute extends AbstractRoute implements Route{
             int offset = random.nextInt(totalWeight);
             // 并确定随机值落在哪个片断上,权重越大的数据源包含的随机片段就多,这样权重大的数据源就容易选举出.
             for (int i = 0; i < length; i++) {
-                offset -= getWeight(ds.get(i));
+                offset -= getWeight(slaveDataSourceConfigs.get(i));
                 if (offset < 0) {
-                    dataSourceDefinition = ds.get(i);
+                    dataSource = slaveDataSourceConfigs.get(i).getTargetDataSource();
                     break;
                 }
             }
         } else {
             // 如果权重相同或权重为0则均等随机
-            dataSourceDefinition = ds.get(random.nextInt(length));
+            dataSource = slaveDataSourceConfigs.get(random.nextInt(length)).getTargetDataSource();
         }
-        return dataSourceDefinition;
+        return dataSource;
     }
 
 }

@@ -1,8 +1,9 @@
 package com.wsp.xjdbc.core.statement;
 
-import com.jd.jdbc.core.ProxyWrapper;
-import com.jd.jdbc.core.readwrite.MasterSlaveConnection;
-import com.jd.jdbc.core.readwrite.MasterSlaveStatement;
+
+import com.wsp.xjdbc.core.MasterSlaveConnection;
+import com.wsp.xjdbc.core.MasterSlaveStatement;
+import com.wsp.xjdbc.core.ProxyWrapper;
 
 import java.sql.*;
 
@@ -11,7 +12,7 @@ import java.sql.*;
  * Description: 实现除了增删改查外的其余方法</br>
  *
  * @author <a href=mailto:wangsongpeng@jd.com>王宋鹏</a>
- * @since 2018/04/09
+ * @since 2018/07/20
  */
 public abstract class AbstractMasterSlaveStatement extends ProxyWrapper implements MasterSlaveStatement {
 
@@ -20,7 +21,7 @@ public abstract class AbstractMasterSlaveStatement extends ProxyWrapper implemen
      */
     protected MasterSlaveConnection masterSlaveConnection;
 
-    private Statement targetStatement;
+    protected Statement targetStatement;
 
     /**
      * 是否是关闭的
@@ -30,9 +31,6 @@ public abstract class AbstractMasterSlaveStatement extends ProxyWrapper implemen
     private boolean poolable;
 
     private int fetchSize;
-
-
-
 
 
     @Override
@@ -270,4 +268,15 @@ public abstract class AbstractMasterSlaveStatement extends ProxyWrapper implemen
         }
         throw new SQLFeatureNotSupportedException("unsupported isCloseOnCompletion() By AbstractMasterSlaveStatement");
     }
+
+
+
+    @Override
+    public ResultSet getGeneratedKeys() throws SQLException {
+        if (null != targetStatement) {
+           return targetStatement.getGeneratedKeys();
+        }
+        throw new SQLFeatureNotSupportedException("unsupported getGeneratedKeys() By AbstractMasterSlaveStatement");
+    }
+
 }

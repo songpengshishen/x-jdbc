@@ -15,5 +15,5 @@ public interface MasterSlaveStatement extends Statement {
      * 通过Sql决策真实的Statement
      * @return
      */
-    Connection determineRealStatement(String sql) throws SQLException;
+    Statement determineRealStatement(String sql) throws SQLException;
 }

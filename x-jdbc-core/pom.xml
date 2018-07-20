@@ -17,6 +17,12 @@
             <artifactId>x-jdbc-config</artifactId>
             <version>2.0.0.Alpha-SNAPSHOT</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.wsp</groupId>
+            <artifactId>x-jdbc-strategy</artifactId>
+            <version>2.0.0.Alpha-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
 </project>

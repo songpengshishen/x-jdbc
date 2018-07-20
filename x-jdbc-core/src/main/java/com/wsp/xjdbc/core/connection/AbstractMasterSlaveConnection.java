@@ -1,7 +1,9 @@
 package com.wsp.xjdbc.core.connection;
-import com.jd.jdbc.core.ProxyWrapper;
-import com.jd.jdbc.core.readwrite.MasterSlaveConnection;
-import com.jd.jdbc.core.readwrite.MasterSlaveDataSource;
+
+
+import com.wsp.xjdbc.core.MasterSlaveConnection;
+import com.wsp.xjdbc.core.MasterSlaveDataSource;
+import com.wsp.xjdbc.core.ProxyWrapper;
 
 import java.sql.*;
 import java.util.Map;
@@ -12,9 +14,9 @@ import java.util.concurrent.Executor;
  * Title :抽象的读写数据源连接实现
  * Description: 实现一些事物提交等辅助方法,具体的创建Statement方法由子类实现</br>
  * @author <a href=mailto:wangsongpeng@jd.com>王宋鹏</a>
- * @since 2018/03/28
+ * @since 2018/07/20
  */
-public abstract class AbstractMasterSlaveConnection extends ProxyWrapper  implements MasterSlaveConnection{
+public abstract class AbstractMasterSlaveConnection extends ProxyWrapper implements MasterSlaveConnection {
 
     /**
      * 读写数据源
@@ -306,7 +308,7 @@ public abstract class AbstractMasterSlaveConnection extends ProxyWrapper  implem
         if(null != targetConnection){
             databaseMetaData = targetConnection.getMetaData();
         }else{
-           targetConnection = this.masterSlaveDataSource.getDataSourceGroupBaseConfig().getMasterDataSource().getDataSource().getConnection();
+           targetConnection = this.masterSlaveDataSource.getMasterDataSource().getConnection();
            replayMethodsInvocation(targetConnection);
            databaseMetaData =  targetConnection.getMetaData();
         }

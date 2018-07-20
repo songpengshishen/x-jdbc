@@ -1,8 +1,9 @@
 package com.wsp.xjdbc.core.connection;
 
-import com.jd.jdbc.core.readwrite.MasterSlaveDataSource;
-import com.jd.jdbc.core.readwrite.ds.StandardMasterSlaveDataSource;
-import com.jd.jdbc.core.readwrite.statement.StandardMasterSlaveStatement;
+import com.wsp.xjdbc.core.MasterSlaveDataSource;
+import com.wsp.xjdbc.core.XJdbcContext;
+
+import com.wsp.xjdbc.core.statement.StandardMasterSlaveStatement;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +14,7 @@ import java.sql.*;
  * Title :标准的读写数据源连接实现,通过决策数据源获取数据源连接
  * Description: 实现JDBC Connection所有方法</br>
  * @author <a href=mailto:wangsongpeng@jd.com>王宋鹏</a>
- * @since 2018/03/28
+ * @since 2018/07/20
  */
 public class StandardMasterSlaveConnection extends AbstractMasterSlaveConnection{
 
@@ -109,7 +110,7 @@ public class StandardMasterSlaveConnection extends AbstractMasterSlaveConnection
 
     @Override
     public void close() throws SQLException {
-        StandardMasterSlaveDataSource.clearOnlyMasterFlag();
+        XJdbcContext.getContext().setOnlyMasterFlag(Boolean.FALSE);
         super.close();
     }
 }

@@ -11,12 +11,21 @@ import java.util.List;
  */
 public interface MasterSlaveDataSource extends DataSource {
 
-
     /**
-     * 获取所有的目标数据源
+     * 获取master数据源
      * @return
      */
-    List<DataSource> getAllTargetDataSource();
+    DataSource getMasterDataSource();
+
+
+    /**
+     * 获取从数据源
+     * @return
+     */
+    List<DataSource> getSlaveTargetDataSources();
+
+
+
 
     /**
      * 通过Sql决策真实的数据源

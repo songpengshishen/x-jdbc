@@ -1,10 +1,12 @@
-package com.jd.jdbc.route;
-import com.jd.jdbc.enums.RouteEnum;
-import com.jd.jdbc.exception.XJdbcConfigurationException;
+package com.wsp.xjdbc.strategy.route;
+
+import com.wsp.xjdbc.common.enums.RouteEnum;
+import com.wsp.xjdbc.common.exception.XJdbcConfigurationException;
+
 /**
  * 路由算法工厂类,用来获取路由算法实例
  * @author <a href=mailto:wangsongpeng@jd.com>王宋鹏</a>
- * @since 1.0.0.Alpha
+ * @since 2018/07/20
  */
 public class RouteFactory {
 
@@ -16,7 +18,6 @@ public class RouteFactory {
     public static Route getInstance(String routeName) {
         Route route =  null;
         switch (RouteEnum.valueOfByCode(routeName)){
-            case SIMPLE:route = new SimpleRoute();break;
             case RANDOM:route = new RandomRoute();break;
             case LOCALROOM:route = new LocalRoomRoute();break;
             default: throw new XJdbcConfigurationException("route Configuration Error!routeName : " + routeName);
